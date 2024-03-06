@@ -1,0 +1,11 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: boschiadm
+      POSTGRES_DB: boschi-db
+    ports:
+      - 5432:5432
