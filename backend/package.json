@@ -1,4 +1,8 @@
 {
+  "type": "module",
+  "prisma": {
+    "seed": "ts-node prisma/seeders/seed.mjs"
+  },
   "scripts": {
     "build": "tsc"
   },
