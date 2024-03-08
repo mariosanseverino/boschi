@@ -6,6 +6,6 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: boschiadm
-      POSTGRES_DB: boschi-db
+      POSTGRES_DB: boschidb
     ports:
       - 5432:5432
