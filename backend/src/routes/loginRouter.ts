@@ -11,9 +11,5 @@ loginRouter.post(
     LoginValidation.verifyLogin,
     (req: Request, res: Response) => loginController.login(req, res)
 )
-loginRouter.get(
-    '/',
-    () => console.log('boa')
-)
 
 export default loginRouter;

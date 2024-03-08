@@ -9,7 +9,7 @@ datasource db {
 }
 
 model User {
-  id       Int   @id @unique
+  id       Int   @id @unique @default(autoincrement())
   email    String
   password String
   name     String
@@ -19,7 +19,7 @@ model User {
 }
 
 model Product {
-  id       Int   @id @unique
+  id       Int   @id @unique @default(autoincrement())
   name     String
   size     String
   price    Decimal
@@ -28,7 +28,7 @@ model Product {
 }
 
 model Order {
-  id       Int   @id @unique
+  id       Int   @id @unique @default(autoincrement())
   discount    Decimal
   total    Decimal
   user     User?     @relation(fields: [userId], references: [id])
