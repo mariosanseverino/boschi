@@ -54,6 +54,9 @@ CREATE TABLE "PaymentMethod" (
 CREATE UNIQUE INDEX "User_id_key" ON "User"("id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Product_id_key" ON "Product"("id");
 
 -- CreateIndex
