@@ -28,13 +28,13 @@ describe('POST /login', () => {
     it('Should return "Invalid email or password", when the email is valid but password is not', async () => {
         const response = await request(app)
             .post('/login')
-            .send({ email: testEmail, password: 'invalid password' })
+            .send({ email: testEmail, password: 'pass' })
 
         expect(response.status).toBe(401)
         expect(response.body).toEqual({ message: 'Invalid email or password' })
     })
 
-    it('Should return a valid token', async () => {
+    it('In case of sucess, it should return a valid token', async () => {
         const response = await request(app)
             .post('/login')
             .send({ email: testEmail, password: testPassword })
