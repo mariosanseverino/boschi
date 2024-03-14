@@ -7,7 +7,6 @@ export interface IProduct {
 }
 
 export interface IProductVariant {
-    id: number,
     color: string,
     size: string,
     quantity: number

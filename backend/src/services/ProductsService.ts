@@ -17,6 +17,16 @@ export default class ProductsService {
         }
     }
 
+    async getById(id: number): Promise<ServiceResponse<IProduct>> {
+        try {
+            const fetchProduct = await this.productsModel.getById(id)
+            return { status: 'SUCCESSFUL', data: fetchProduct }
+        } catch (error) {
+            const errorMessage = error as Error
+            return { status: 'UNAUTHORIZED', data: { message: errorMessage.message } }
+        }
+    }
+
     async create({ name, price, description, variants }: IProductCreateProps): Promise<ServiceResponse<IProduct>> {
         try {
             const newProduct = await this.productsModel.create({

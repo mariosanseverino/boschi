@@ -16,7 +16,22 @@ export default class ProductsModel {
             price: Number(product.price),
             description: product.description,
             variants: product.variants
+                .map(({ productId, ...variant }) => variant)
         }))
+    }
+
+    async getById(reqId: number): Promise<IProduct> {
+        const fetchProduct = await this.productsModel.product.findFirst({ where: { id: reqId }, include: { variants: true } })
+        if (!fetchProduct) {
+            throw new Error('Invalid product ID.')
+        }
+
+        return {
+            ...fetchProduct,
+            price: Number(fetchProduct.price),
+            variants: fetchProduct.variants
+                .map(({ productId, ...variant }) => variant)
+        }
     }
 
     async create(product: IProductCreateProps): Promise<IProduct> {
@@ -41,6 +56,7 @@ export default class ProductsModel {
             price: Number(newProduct.price),
             description: newProduct.description,
             variants: newProduct.variants
+                .map(({ productId, ...variant }) => variant)
         }
     } 
 }

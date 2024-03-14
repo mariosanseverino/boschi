@@ -27,13 +27,14 @@ model Product {
 }
 
 model ProductVariant {
-  id       Int   @id @unique @default(autoincrement())
   color    String
   size     String
   quantity Int
   product  Product @relation(fields: [productId], references: [id])
   productId Int
   OrderProduct OrderProduct[]
+
+   @@id([color, size, productId])
 }
 
 model Order {
@@ -47,11 +48,13 @@ model Order {
 
 model OrderProduct {
   order    Order   @relation(fields: [orderId], references: [id])
-  productVariant  ProductVariant @relation(fields: [productVariantId], references: [id])
+  productVariant  ProductVariant @relation(fields: [color, size, productId], references: [color, size, productId])
+  color String
+  size String
   quantity Int
   orderId  Int
-  productVariantId Int
-  @@id([orderId, productVariantId])
+  productId Int
+  @@id([orderId, color, size, productId])
 }
 
 model PaymentMethod {

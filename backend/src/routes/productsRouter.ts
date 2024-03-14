@@ -13,6 +13,12 @@ productsRouter.get(
     (req: Request, res: Response) => productsController.get(req, res)
 )
 
+productsRouter.get(
+    '/:id',
+    JWTValidation.verifyJWT,
+    (req: Request, res: Response) => productsController.getById(req, res)
+)
+
 productsRouter.post(
     '/',
     JWTValidation.verifyJWT,
