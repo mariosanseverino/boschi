@@ -1,6 +1,7 @@
 import { Request, Response, Router } from 'express'
 import ProductsController from '../controllers/ProductsController'
 import JWTValidation from '../middlewares/JWTValidation'
+import ProductsValidation from '../middlewares/ProductsValidation'
 
 const productsController = new ProductsController()
 
@@ -15,6 +16,7 @@ productsRouter.get(
 productsRouter.post(
     '/',
     JWTValidation.verifyJWT,
+    ProductsValidation.verifyCreate,
     (req: Request, res: Response) => productsController.create(req, res)
 )
 
