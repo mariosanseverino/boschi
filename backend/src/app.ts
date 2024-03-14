@@ -29,6 +29,4 @@ class App {
     }
 }
 
-const app = new App()
-
-export { app as default }
+export default App

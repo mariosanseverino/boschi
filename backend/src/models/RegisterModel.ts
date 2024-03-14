@@ -16,7 +16,7 @@ export default class RegisterModel implements IRegisterModel {
         ): Promise<IUser> {
         const verifyEmail = await this.registerModel.user.findFirst({ where: { email } })
         if (verifyEmail) {
-            throw new Error('E-mail already in use')
+            throw new Error('Email already in use')
         }
         const newUser = await this.registerModel.user.create(
             { data: {
