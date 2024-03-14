@@ -10,7 +10,7 @@ const hashedAdminPassword = await bcrypt.hash(adminPassword, saltRounds)
 const hashedTestPassword = await bcrypt.hash(testPassword, saltRounds)
 
 async function main() {
-    const admin = await prisma.user.create({
+    await prisma.user.create({
         data: {
             email: 'mario@boschi.com',
             password: hashedAdminPassword,
@@ -19,7 +19,7 @@ async function main() {
             birthday: '25051993',
         }
     })
-    const test = await prisma.user.create({
+    await prisma.user.create({
         data: {
             email: 'testemail@gmail.com',
             password: hashedTestPassword,

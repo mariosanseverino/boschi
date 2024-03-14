@@ -12,4 +12,4 @@ loginRouter.post(
     (req: Request, res: Response) => loginController.login(req, res)
 )
 
-export default loginRouter;
+export default loginRouter

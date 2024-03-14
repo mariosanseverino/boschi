@@ -6,7 +6,7 @@ import BCrypt from '../utils/BCrypt'
 
 export default class RegisterService {
     constructor(
-        private registerModel = new RegisterModel(),
+        private registerModel = new RegisterModel()
     ) {}
 
     async register(
