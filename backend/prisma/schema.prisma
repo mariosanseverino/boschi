@@ -23,7 +23,7 @@ model Product {
   name     String
   price    Decimal
   description String
-  ProductVariant ProductVariant[]
+  variants ProductVariant[]
 }
 
 model ProductVariant {

@@ -1,5 +1,5 @@
 import { ServiceResponse } from '../interfaces/ServiceResponse'
-import { IRegisterProps } from '../interfaces/register/IRegisterProps'
+import { IRegisterProps } from '../interfaces/register/IRegister'
 import { IUser } from '../interfaces/users/IUser'
 import RegisterModel from '../models/RegisterModel'
 import BCrypt from '../utils/BCrypt'

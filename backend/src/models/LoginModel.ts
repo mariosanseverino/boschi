@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { ILoginModel } from '../interfaces/login/ILoginModel'
+import { ILoginModel } from '../interfaces/login/ILogin'
 import { IUser } from '../interfaces/users/IUser'
 import BCrypt from '../utils/BCrypt'
 

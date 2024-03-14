@@ -12,4 +12,11 @@ export default class ProductsController {
         const { status, data } = serviceResponse
         return res.status(ServiceCodes[status]).json(data)
     }
+
+    async create(req: Request, res: Response) {
+        const { name, price, description, variants } = req.body
+        const serviceResponse = await this.productsService.create({ name, price, description, variants })
+        const { status, data } = serviceResponse
+        return res.status(ServiceCodes[status]).json(data)
+    }
 }

@@ -8,7 +8,7 @@ async function main() {
             name: 'Basic T-Shirt',
             price: 150,
             description: 'Made of 100% Persian Cotton',
-            ProductVariant: {
+            variants: {
                 create: [
                     {
                         color: 'White',

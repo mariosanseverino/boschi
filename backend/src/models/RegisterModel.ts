@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { IUser } from '../interfaces/users/IUser'
-import { IRegisterModel } from '../interfaces/register/IRegisterModel'
-import { IRegisterProps } from '../interfaces/register/IRegisterProps'
+import { IRegisterModel, IRegisterProps } from '../interfaces/register/IRegister'
 
 export default class RegisterModel implements IRegisterModel {
     private registerModel = new PrismaClient()
