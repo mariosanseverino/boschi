@@ -96,7 +96,7 @@ export default class ProductsModel {
         }
         
         if ('description' in updates) {
-        updateData.description = updates.description;
+            updateData.description = updates.description;
         }
 
         const updatedProduct = await this.productsModel.product.update({
@@ -105,11 +105,11 @@ export default class ProductsModel {
         })
 
         return {
-          id,
-          name: updatedProduct.name,
-          price: Number(updatedProduct.price),
-          description: updatedProduct.description,
-          variants: this.processVariants(findProduct.variants)
+            id,
+            name: updatedProduct.name,
+            price: Number(updatedProduct.price),
+            description: updatedProduct.description,
+            variants: this.processVariants(findProduct.variants)
         }
     }
 
