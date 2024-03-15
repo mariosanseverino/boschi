@@ -57,6 +57,7 @@ export default class ProductsModel {
                 variants: true
             }
         })
+        
         if (!newProduct) {
             throw new Error('Unable to create new product.')
         }
@@ -86,17 +87,10 @@ export default class ProductsModel {
 
         const updateData: IProductUpdateData = {}
 
-        
-        if ('name' in updates) {
-            updateData.name = updates.name
-        }
-
-        if ('price' in updates) {
-            updateData.price = Number(updates.price);
-        }
-        
-        if ('description' in updates) {
-            updateData.description = updates.description;
+        for (let property in updates) {
+            updateData[property as keyof IProduct] = property === 'price'
+            ? Number((updates as Partial<IProductUpdateData>)[property])
+            : (updates as Partial<IProductUpdateData>)[property];
         }
 
         const updatedProduct = await this.productsModel.product.update({
