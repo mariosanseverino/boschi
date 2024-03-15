@@ -8,28 +8,28 @@ const productsController = new ProductsController()
 const productsRouter = Router()
 
 productsRouter.get(
-    '/',
-    JWTValidation.verifyJWT,
-    (req: Request, res: Response) => productsController.get(req, res)
+	'/',
+	JWTValidation.verifyJWT,
+	(req: Request, res: Response) => productsController.get(req, res)
 )
 
 productsRouter.get(
-    '/:id',
-    JWTValidation.verifyJWT,
-    (req: Request, res: Response) => productsController.getById(req, res)
+	'/:id',
+	JWTValidation.verifyJWT,
+	(req: Request, res: Response) => productsController.getById(req, res)
 )
 
 productsRouter.post(
-    '/',
-    JWTValidation.verifyJWT,
-    ProductsValidation.verifyCreate,
-    (req: Request, res: Response) => productsController.create(req, res)
+	'/',
+	JWTValidation.verifyJWT,
+	ProductsValidation.verifyCreate,
+	(req: Request, res: Response) => productsController.create(req, res)
 )
 
 productsRouter.put(
-    '/:id',
-    JWTValidation.verifyJWT,
-    (req: Request, res: Response) => productsController.update(req, res)
+	'/:id',
+	JWTValidation.verifyJWT,
+	(req: Request, res: Response) => productsController.update(req, res)
 )
 
 export default productsRouter

@@ -24,5 +24,4 @@ export interface IProductUpdateData {
     name?: string,
     price?: number,
     description?: string,
-    [key: string]: any,
 }
