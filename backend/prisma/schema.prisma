@@ -34,7 +34,7 @@ model ProductVariant {
   productId Int
   OrderProduct OrderProduct[]
 
-   @@id([color, size, productId])
+   @@unique([color, size, productId])
 }
 
 model Order {

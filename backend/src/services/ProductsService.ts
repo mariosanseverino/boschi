@@ -1,5 +1,5 @@
 import { ServiceResponse } from '../interfaces/ServiceResponse'
-import { IProduct, IProductCreateProps } from '../interfaces/products/IProduct';
+import { IProduct, IProductCreateProps, IProductUpdateProps } from '../interfaces/products/IProduct';
 import ProductsModel from '../models/ProductsModel';
 
 export default class ProductsService {
@@ -36,6 +36,22 @@ export default class ProductsService {
                 variants
             })
             return { status: 'SUCCESSFUL', data: newProduct }
+        } catch (error) {
+            const errorMessage = error as Error
+            return { status: 'UNAUTHORIZED', data: { message: errorMessage.message } }
+        }
+    }
+
+    async update({ id, updates }: IProductUpdateProps): Promise<ServiceResponse<IProduct>> {
+        try {           
+            if (updates && updates.variants) {
+                const updateVariantsPromises = updates.variants.map((variant) => {
+                    return this.productsModel.updateVariant(id, variant)
+                })
+                await Promise.all(updateVariantsPromises)
+            }            
+            const updatedProduct = await this.productsModel.update({ id, updates })
+            return { status: 'SUCCESSFUL', data: updatedProduct }
         } catch (error) {
             const errorMessage = error as Error
             return { status: 'UNAUTHORIZED', data: { message: errorMessage.message } }

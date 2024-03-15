@@ -26,4 +26,10 @@ productsRouter.post(
     (req: Request, res: Response) => productsController.create(req, res)
 )
 
+productsRouter.put(
+    '/:id',
+    JWTValidation.verifyJWT,
+    (req: Request, res: Response) => productsController.update(req, res)
+)
+
 export default productsRouter

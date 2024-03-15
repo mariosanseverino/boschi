@@ -1,8 +1,20 @@
 import { PrismaClient } from "@prisma/client";
-import { IProduct, IProductCreateProps } from "../interfaces/products/IProduct";
+import { IProduct, IProductCreateProps, IProductUpdateData, IProductUpdateProps, IProductVariant } from "../interfaces/products/IProduct";
 
 export default class ProductsModel {
     private productsModel = new PrismaClient()
+
+    private processVariants(variants: IProductVariant[]): IProductVariant[] {
+        return variants
+            .map(({ productId, ...variant }) => variant)
+            .sort((a, b) => {
+                if (a.color < b.color) return -1;
+                if (a.color > b.color) return 1;
+    
+                const sizes = ['S', 'M', 'L', 'XL'];
+                return sizes.indexOf(a.size) - sizes.indexOf(b.size);
+            });
+    }
 
     async get(): Promise<IProduct[]> {
         const fetchAllProducts = await this.productsModel.product.findMany({ include: { variants: true } })
@@ -15,8 +27,7 @@ export default class ProductsModel {
             name: product.name,
             price: Number(product.price),
             description: product.description,
-            variants: product.variants
-                .map(({ productId, ...variant }) => variant)
+            variants: this.processVariants(product.variants)
         }))
     }
 
@@ -55,8 +66,63 @@ export default class ProductsModel {
             name: newProduct.name,
             price: Number(newProduct.price),
             description: newProduct.description,
-            variants: newProduct.variants
-                .map(({ productId, ...variant }) => variant)
+            variants: this.processVariants(newProduct.variants)
         }
-    } 
+    }
+    
+    async update({ id, updates }: IProductUpdateProps): Promise<IProduct> {
+        if (!updates) {
+            throw new Error('No properties found on request.')
+        }
+
+        const findProduct = await this.productsModel.product.findUnique({
+            where: { id },
+            include: { variants: true }
+        })
+    
+        if (!findProduct) {
+            throw new Error('Product not found.')
+        }
+
+        const updateData: IProductUpdateData = {}
+
+        
+        if ('name' in updates) {
+            updateData.name = updates.name
+        }
+
+        if ('price' in updates) {
+            updateData.price = Number(updates.price);
+        }
+        
+        if ('description' in updates) {
+        updateData.description = updates.description;
+        }
+
+        const updatedProduct = await this.productsModel.product.update({
+            where: { id },
+            data: updateData
+        })
+
+        return {
+          id,
+          name: updatedProduct.name,
+          price: Number(updatedProduct.price),
+          description: updatedProduct.description,
+          variants: this.processVariants(findProduct.variants)
+        }
+    }
+
+    async updateVariant(productId: number, variant: IProductVariant) {
+        const { color, size } = variant
+        const updatedVariant = await this.productsModel.productVariant.update({
+            where: { color_size_productId: {
+                color,
+                size,
+                productId
+            } },
+            data: variant
+        })
+        return updatedVariant
+    }
 }

@@ -25,9 +25,7 @@ CREATE TABLE "ProductVariant" (
     "color" TEXT NOT NULL,
     "size" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
-    "productId" INTEGER NOT NULL,
-
-    CONSTRAINT "ProductVariant_pkey" PRIMARY KEY ("color","size","productId")
+    "productId" INTEGER NOT NULL
 );
 
 -- CreateTable
@@ -69,6 +67,9 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Product_id_key" ON "Product"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ProductVariant_color_size_productId_key" ON "ProductVariant"("color", "size", "productId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Order_id_key" ON "Order"("id");
