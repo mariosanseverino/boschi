@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { PrismaClient } from '@prisma/client'
 import { ILoginModel } from '../interfaces/login/ILogin'
-import { IUser } from '../interfaces/users/IUser'
+import { IUserRequest } from '../interfaces/users/IUser'
 import BCrypt from '../utils/BCrypt'
 
 export default class LoginModel implements ILoginModel {
 	private loginModel = new PrismaClient()
 
-	async login(email: string, reqPassword: string): Promise<IUser> {
+	async login(email: string, reqPassword: string): Promise<IUserRequest> {
 		const findUser = await this.loginModel.user.findFirst({ where: { email } })
 		if (!findUser) {
 			throw new Error('Invalid email or password')
@@ -19,6 +19,6 @@ export default class LoginModel implements ILoginModel {
 
 		const { password, ...userData } = findUser
 
-		return userData as IUser
+		return userData as IUserRequest
 	}
 }
