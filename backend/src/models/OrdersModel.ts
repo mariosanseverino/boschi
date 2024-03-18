@@ -5,6 +5,7 @@ export default class OrdersModel {
 	private ordersModel = new PrismaClient()
 
 	async create({ discount, total, userId, address, productsList }: IOrderRequest): Promise<IOrder> {
+		await this.findUser(userId)
 		await this.findProducts(productsList)
           
 		const newOrder = await this.ordersModel.order.create({
@@ -60,6 +61,13 @@ export default class OrdersModel {
 				productVariantSize: size,
 				quantity
 			}))
+		}
+	}
+
+	async findUser(userId: number) {
+		const verifyId = await this.ordersModel.user.findUnique({ where: { id: userId } })
+		if (!verifyId) {
+			throw new Error('Invalid user ID.')
 		}
 	}
 

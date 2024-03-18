@@ -22,7 +22,7 @@ export default class ProductsValidation {
 
 		for (const variant of variants) {
 			if (typeof variant.color !== 'string'
-      || typeof variant.quantity !== 'number') {
+			|| typeof variant.quantity !== 'number') {
 				return res.status(ServiceCodes.INVALID_DATA).json({ message: 'Invalid data types, please try again' })
 			}
 
