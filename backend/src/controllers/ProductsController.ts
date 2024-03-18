@@ -29,7 +29,7 @@ export default class ProductsController {
 
 	async update(req: Request, res: Response) {
 		const { id } = req.params
-		const updates = req.body       
+		const updates = req.body
 		const serviceResponse = await this.productsService.update({ id: Number(id), updates })
 		const { status, data } = serviceResponse
 		return res.status(ServiceCodes[status]).json(data)

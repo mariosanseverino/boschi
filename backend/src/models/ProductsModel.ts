@@ -80,28 +80,26 @@ export default class ProductsModel {
 		const findProduct = await this.productsModel.product.findUnique({
 			where: { id },
 			include: { variants: true }
-		})
+		})		
     
 		if (!findProduct) {
 			throw new Error('Product not found.')
 		}
 
 		const updateData: IProductUpdateData = {}
-
+		
 		for (const property in updates) {
 			const key = property as keyof IProductUpdateData
-        
+			
 			if (key === 'price') {
-				if (typeof updates[key] === 'string') {
-					updateData[key] = Number(updates[key])
-				}
+				updateData['price'] = Number(updates[key])
 			} else {
 				if (typeof updates[key] === 'string') {
 					updateData[key] = updates[key]
 				}
 			}
 		}
-
+		
 		const updatedProduct = await this.productsModel.product.update({
 			where: { id },
 			data: updateData
