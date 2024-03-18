@@ -1,15 +1,15 @@
 import { Request, Response, Router } from 'express'
-import RegisterController from '../controllers/RegisterController';
-import RegisterValidation from '../middlewares/RegisterValidation';
+import RegisterController from '../controllers/RegisterController'
+import RegisterValidation from '../middlewares/RegisterValidation'
 
-const registerController = new RegisterController();
+const registerController = new RegisterController()
 
-const registerRouter = Router();
+const registerRouter = Router()
 
 registerRouter.post(
-    '/',
-    RegisterValidation.verifyRegister,
-    (req: Request, res: Response) => registerController.register(req, res)
+	'/',
+	RegisterValidation.verifyRegister,
+	(req: Request, res: Response) => registerController.register(req, res)
 )
 
-export default registerRouter;
+export default registerRouter
