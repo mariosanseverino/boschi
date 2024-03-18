@@ -114,7 +114,7 @@ export default class ProductsModel {
 		}
 	}
 
-	async updateVariant(productId: number, variant: IProductVariant) {
+	async updateVariant(productId: number, variant: IProductVariant): Promise<IProductVariant> {
 		const { color, size } = variant
 		const updatedVariant = await this.productsModel.productVariant.update({
 			where: { color_size_productId: {
@@ -125,5 +125,24 @@ export default class ProductsModel {
 			data: variant
 		})
 		return updatedVariant
+	}
+
+	async delete(productId: number): Promise<IProduct> {
+		const deleteProduct = await this.productsModel.product.findUnique({ where: { id: productId }, include: { variants : true } })
+
+		if (!deleteProduct) {
+			throw new Error('Product not found.')
+		}
+
+		await this.productsModel.productVariant.deleteMany({ where: { product: { id: productId } } })
+		await this.productsModel.product.delete({ where: { id: productId } })
+
+		return {
+			id: productId,
+			name: deleteProduct.name,
+			price: Number(deleteProduct.price),
+			description: deleteProduct.description,
+			variants: this.processVariants(deleteProduct.variants)
+		}
 	}
 }

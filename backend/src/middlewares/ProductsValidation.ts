@@ -34,13 +34,7 @@ export default class ProductsValidation {
 		next()
 	}
 
-	static verifyUpdate(req: Request, res: Response, next: NextFunction): Response | void {
-		const { id } = req.params
-		
-		if (!id) {
-			return res.status(ServiceCodes.INVALID_DATA).json({ message: 'Product ID is invalid' })
-		}
-		
+	static verifyUpdate(req: Request, res: Response, next: NextFunction): Response | void {		
 		const updates: Partial<IProduct> = req.body
 		const validKeys: Array<keyof IProduct> = ['id', 'name', 'price', 'description', 'variants']
 
@@ -58,6 +52,16 @@ export default class ProductsValidation {
 					return res.status(ServiceCodes.INVALID_DATA).json({ message: `Invalid value for ${key}. Expected a numeric string.` })
 				}
 			}
+		}
+
+		next()
+	}
+
+	static verifyProductId(req: Request, res: Response, next: NextFunction): Response | void {
+		const { id } = req.params
+		
+		if (!id) {
+			return res.status(ServiceCodes.INVALID_DATA).json({ message: 'Product ID is invalid' })
 		}
 
 		next()

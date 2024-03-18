@@ -15,6 +15,7 @@ productsRouter.get(
 
 productsRouter.get(
 	'/:id',
+	ProductsValidation.verifyProductId,
 	JWTValidation.verifyJWT,
 	(req: Request, res: Response) => productsController.getById(req, res)
 )
@@ -29,14 +30,16 @@ productsRouter.post(
 productsRouter.put(
 	'/:id',
 	JWTValidation.verifyJWT,
+	ProductsValidation.verifyProductId,
 	ProductsValidation.verifyUpdate,
 	(req: Request, res: Response) => productsController.update(req, res)
 )
 
 productsRouter.delete(
 	'/:id',
+	ProductsValidation.verifyProductId,
 	JWTValidation.verifyJWT,
-	
+	(req: Request, res: Response) => productsController.delete(req, res)
 )
 
 export default productsRouter

@@ -57,4 +57,14 @@ export default class ProductsService {
 			return { status: 'UNAUTHORIZED', data: { message: errorMessage.message } }
 		}
 	}
+
+	async delete({ id }: Pick<IProduct, 'id'>): Promise<ServiceResponse<IProduct>> {
+		try {
+			const deletedProduct = await this.productsModel.delete(id)
+			return { status: 'SUCCESSFUL', data: deletedProduct }
+		} catch (error) {
+			const errorMessage = error as Error
+			return { status: 'UNAUTHORIZED', data: { message: errorMessage.message } }
+		}
+	}
 }

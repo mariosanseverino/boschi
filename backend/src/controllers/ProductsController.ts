@@ -34,4 +34,11 @@ export default class ProductsController {
 		const { status, data } = serviceResponse
 		return res.status(ServiceCodes[status]).json(data)
 	}
+
+	async delete(req: Request, res: Response) {
+		const { id } = req.params
+		const serviceResponse = await this.productsService.delete({ id: Number(id) })
+		const { status, data } = serviceResponse
+		return res.status(ServiceCodes[status]).json(data)
+	}
 }
