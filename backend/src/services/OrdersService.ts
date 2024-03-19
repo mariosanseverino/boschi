@@ -7,9 +7,9 @@ export default class OrdersService {
 		private ordersModel = new OrdersModel()
 	) { }
 
-	async create({ discount, total, userId, address, productsList }: IOrderRequest): Promise<ServiceResponse<IOrder>> {
+	async create({ discount, total, userId, addressId, shipmentTypeId, productsList }: IOrderRequest): Promise<ServiceResponse<IOrder>> {
 		try {
-			const orderResponse = await this.ordersModel.create({ discount, total, userId, address, productsList })
+			const orderResponse = await this.ordersModel.create({ discount, total, userId, addressId, shipmentTypeId, productsList })
 			return { status: 'SUCCESSFUL', data: orderResponse }
 		} catch (error) {
 			const errorMessage = error as Error

@@ -13,8 +13,16 @@ model User {
   email    String @unique
   password String
   name     String
-  address  String
+  address  UserAddress[]
   birthday String
+  Order    Order[]
+}
+
+model UserAddress {
+  id       Int @id @default(autoincrement())
+  location String @unique
+  userId   Int
+  User     User  @relation(fields: [userId], references: [id])
   Order    Order[]
 }
 
@@ -37,13 +45,30 @@ model ProductVariant {
    @@unique([color, size, productId])
 }
 
+model ShipmentType {
+  id       Int @id @default(autoincrement())
+  type     String @unique
+  Order    Order[]
+}
+
+model OrderStatus {
+  status   String @id
+  Order    Order[]
+}
+
 model Order {
   id       Int   @id @unique @default(autoincrement())
-  discount    Decimal
+  discount Decimal
   total    Decimal
-  user     User?     @relation(fields: [userId], references: [id])
-  userId   Int?
+  user     User     @relation(fields: [userId], references: [id])
+  userId   Int
+  address  UserAddress @relation(fields: [addressId], references: [id])
+  addressId  Int
   OrderProduct OrderProduct[]
+  shipmentType ShipmentType  @relation(fields: [shipmentTypeId], references: [id])
+  shipmentTypeId Int
+  orderStatus OrderStatus @relation(fields: [orderStatusId], references: [status])
+  orderStatusId String
 }
 
 model OrderProduct {

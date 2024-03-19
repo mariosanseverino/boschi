@@ -1,18 +1,29 @@
 import { PrismaClient } from '@prisma/client'
 import { IOrder, IOrderRequest } from '../interfaces/orders/IOrder'
+import { IUser, IUserAddress } from '../interfaces/users/IUser'
 
 export default class OrdersModel {
 	private ordersModel = new PrismaClient()
 
-	async create({ discount, total, userId, address, productsList }: IOrderRequest): Promise<IOrder> {
-		await this.findUser(userId)
+	async create({ discount, total, userId, addressId, shipmentTypeId, productsList }: IOrderRequest): Promise<IOrder> {
 		await this.findProducts(productsList)
+		await this.findShipmentType(shipmentTypeId)
+		const user = await this.findUser(userId)
+
+		if (!user.address) {
+			throw new Error('User has no address.')
+		}
+
+		const address = this.findAddress(user.address, addressId)
           
 		const newOrder = await this.ordersModel.order.create({
 			data: {
 				discount,
 				total,
 				userId,
+				addressId,
+				shipmentTypeId,
+				orderStatusId: 'Pending',
 				OrderProduct: {
 					create: await Promise.all(productsList.map(async ({ productId, quantity, color, size }) => {
 						const productVariant = await this.ordersModel.productVariant.findUnique({
@@ -48,13 +59,15 @@ export default class OrdersModel {
 		}
 
 		await this.updateStock(productsList)
-		
+
 		return {
 			id: newOrder.id,
 			discount,
 			total,
 			userId,
 			address,
+			shipmentTypeId,
+			orderStatus: 'Pending',
 			productsList: productsList.map(({ productId, color, quantity, size }) => ({
 				productId,
 				productVariantColor: color,
@@ -64,11 +77,28 @@ export default class OrdersModel {
 		}
 	}
 
-	async findUser(userId: number) {
-		const verifyId = await this.ordersModel.user.findUnique({ where: { id: userId } })
-		if (!verifyId) {
+	async findUser(userId: IUser['id']): Promise<Partial<IUser>> {
+		const user = await this.ordersModel.user.findUnique({ where: { id: userId },
+			include: { address: true } })
+		
+		if (!user) {
 			throw new Error('Invalid user ID.')
 		}
+		
+		return {
+			id: user.id,
+			email: user.email,
+			name: user.name,
+			address: user.address,
+		}
+	}
+
+	findAddress(userAddressList: IUserAddress[], addressId: IUserAddress['id']): IUserAddress['id'] {
+		const address = userAddressList.find((address) => address.id === addressId)
+		if (!address) {
+			throw new Error('User address not found.')
+		}
+		return address.id
 	}
 
 	async findProducts(productsList: IOrderRequest['productsList']) {
@@ -80,6 +110,14 @@ export default class OrdersModel {
 				}
 			})
 		)
+	}
+
+	async findShipmentType(shipmentTypeId: number) {
+		const shipmentType = await this.ordersModel.shipmentType.findUnique({ where: { id: shipmentTypeId }})
+	
+		if (!shipmentType) {
+			throw new Error('Invalid shipment type ID.')
+		}
 	}
 
 	async updateStock(productsList: IOrderRequest['productsList']) {

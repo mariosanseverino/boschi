@@ -3,12 +3,13 @@ import { ServiceCodes } from '../interfaces/ServiceResponse'
 
 export default class OrderValidation {
 	static validateOrder(req: Request, res: Response, next: NextFunction) {
-		const { discount, total, userId, address, productsList } = req.body
+		const { discount, total, userId, addressId, shipmentTypeId, productsList } = req.body
 
 		if (discount === undefined
             || total === undefined
             || userId === undefined
-            || address === undefined
+            || addressId === undefined
+            || shipmentTypeId === undefined
             || productsList === undefined) {
 			return res.status(ServiceCodes.INVALID_DATA).json({ message: 'Order is missing mandatory information.' })
 		}
