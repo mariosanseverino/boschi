@@ -51,11 +51,6 @@ model ShipmentType {
   Order    Order[]
 }
 
-model OrderStatus {
-  status   String @id
-  Order    Order[]
-}
-
 model Order {
   id       Int   @id @unique @default(autoincrement())
   discount Decimal
@@ -67,8 +62,7 @@ model Order {
   OrderProduct OrderProduct[]
   shipmentType ShipmentType  @relation(fields: [shipmentTypeId], references: [id])
   shipmentTypeId Int
-  orderStatus OrderStatus @relation(fields: [orderStatusId], references: [status])
-  orderStatusId String
+  orderStatus String
 }
 
 model OrderProduct {

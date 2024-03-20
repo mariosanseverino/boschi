@@ -34,6 +34,11 @@ export interface IOrderRequest {
     }[]
 }
 
+export interface IOrderUpdate {
+    orderId: IOrder['id']
+    newOrderStatus: OrderStatus
+}
+
 export interface IOrderProduct {
     orderId?: IOrder['id'],
     productId: IProduct['id'],

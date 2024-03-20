@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
-import { IOrder, IOrderRequest } from '../interfaces/orders/IOrder'
+import { IOrder, IOrderProduct, IOrderRequest, IOrderUpdate, OrderStatus } from '../interfaces/orders/IOrder'
 import { IUser, IUserAddress } from '../interfaces/users/IUser'
+import { IProductVariant } from '../interfaces/products/IProduct'
 
 export default class OrdersModel {
 	private ordersModel = new PrismaClient()
@@ -23,7 +24,7 @@ export default class OrdersModel {
 				userId,
 				addressId,
 				shipmentTypeId,
-				orderStatusId: 'Pending',
+				orderStatus: 'Pending',
 				OrderProduct: {
 					create: await Promise.all(productsList.map(async ({ productId, quantity, color, size }) => {
 						const productVariant = await this.ordersModel.productVariant.findUnique({
@@ -67,14 +68,47 @@ export default class OrdersModel {
 			userId,
 			address,
 			shipmentTypeId,
-			orderStatus: 'Pending',
-			productsList: productsList.map(({ productId, color, quantity, size }) => ({
-				productId,
-				productVariantColor: color,
-				productVariantSize: size,
-				quantity
-			}))
+			orderStatus: newOrder.orderStatus as OrderStatus,
+			productsList: this.convertToProductsList(productsList)
 		}
+	}
+
+	async update({ orderId, newOrderStatus }: IOrderUpdate): Promise<IOrder> {
+		const fetchOrder = await this.findOrder(orderId)
+
+		if (!fetchOrder) {
+			throw new Error('Order not found.')
+		}
+
+		const updatedOrder = await this.ordersModel.order.update(
+			{
+				where: { id: fetchOrder?.id },
+				data: { orderStatus: newOrderStatus as OrderStatus },
+				include: {
+					address: true,
+					OrderProduct: true
+				}
+			})
+
+		if (!updatedOrder) {
+			throw new Error(`Unable to update order with ID ${ orderId }`)
+		}
+
+		return {
+			id: updatedOrder.id,
+			discount: Number(updatedOrder.discount),
+			total: Number(updatedOrder.total),
+			userId: updatedOrder.userId,
+			address: updatedOrder.addressId,
+			shipmentTypeId: updatedOrder.shipmentTypeId,
+			orderStatus: updatedOrder.orderStatus as OrderStatus,
+			productsList: this.convertToProductsList(updatedOrder.OrderProduct)
+		}
+	}
+
+	async findOrder(orderId: IOrder['id']) {
+		const order = await this.ordersModel.order.findUnique({ where: { id: orderId }})
+		return order
 	}
 
 	async findUser(userId: IUser['id']): Promise<Partial<IUser>> {
@@ -155,5 +189,14 @@ export default class OrdersModel {
 				})
 			})
 		)
+	}
+
+	convertToProductsList(OrderProduct: IProductVariant[]): IOrderProduct[] {
+		return OrderProduct.map((product) => ({
+			productId: product.productId!,
+			productVariantColor: product.color,
+			productVariantSize: product.size,
+			quantity: product.quantity
+		}))
 	}
 }
