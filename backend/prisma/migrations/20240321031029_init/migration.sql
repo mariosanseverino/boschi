@@ -35,7 +35,7 @@ CREATE TABLE "Product" (
 
 -- CreateTable
 CREATE TABLE "ProductVariant" (
-    "price" DECIMAL(65,30) NOT NULL,
+    "price" DOUBLE PRECISION NOT NULL,
     "color" TEXT NOT NULL,
     "size" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
@@ -45,10 +45,10 @@ CREATE TABLE "ProductVariant" (
 -- CreateTable
 CREATE TABLE "Order" (
     "id" SERIAL NOT NULL,
-    "discount" DECIMAL(65,30) NOT NULL,
-    "shipping" DECIMAL(65,30) NOT NULL,
-    "subtotal" DECIMAL(65,30) NOT NULL,
-    "total" DECIMAL(65,30) NOT NULL,
+    "discount" DOUBLE PRECISION NOT NULL,
+    "shipping" DOUBLE PRECISION NOT NULL,
+    "subtotal" DOUBLE PRECISION NOT NULL,
+    "total" DOUBLE PRECISION NOT NULL,
     "userId" INTEGER NOT NULL,
     "addressLocation" TEXT NOT NULL,
     "shipmentType" "ShipmentType" NOT NULL,
@@ -59,7 +59,7 @@ CREATE TABLE "Order" (
 
 -- CreateTable
 CREATE TABLE "OrderProduct" (
-    "price" DECIMAL(65,30) NOT NULL,
+    "price" DOUBLE PRECISION NOT NULL,
     "color" TEXT NOT NULL,
     "size" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,

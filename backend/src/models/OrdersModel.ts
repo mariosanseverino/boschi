@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { Order, OrderRequest, OrderUpdate, OrderStatus } from '../interfaces/orders/Order'
+import { Order, OrderRequest, OrderUpdate } from '../interfaces/orders/Order'
 import { User, UserAddress } from '../interfaces/users/User'
 
 export default class OrdersModel {
@@ -9,8 +9,8 @@ export default class OrdersModel {
 		await this.findProducts(productsList)
 		const user = await this.findUser(userId)
 
-		if (!user.address) {
-			throw new Error('User has no address.')
+		if (!user) {
+			throw new Error('User invalid.')
 		}
 
 		const newOrder = await this.ordersModel.order.create({
@@ -76,7 +76,7 @@ export default class OrdersModel {
 	}
 
 	async update({ orderId, newOrderStatus }: OrderUpdate): Promise<Order> {
-		const fetchOrder = await this.findOrder(orderId)
+		const fetchOrder = await this.getById(orderId)
 
 		if (!fetchOrder) {
 			throw new Error('Order not found.')
@@ -85,7 +85,7 @@ export default class OrdersModel {
 		const updatedOrder = await this.ordersModel.order.update(
 			{
 				where: { id: fetchOrder?.id },
-				data: { orderStatus: newOrderStatus as OrderStatus },
+				data: { orderStatus: newOrderStatus },
 				include: {
 					address: true,
 					OrderProduct: true
@@ -96,41 +96,27 @@ export default class OrdersModel {
 			throw new Error(`Unable to update order with ID ${orderId}`)
 		}
 
-		return {
-			id: updatedOrder.id,
-			discount: Number(updatedOrder.discount),
-			shipping: Number(updatedOrder.shipping),
-			subtotal: Number(updatedOrder.subtotal),
-			total: Number(updatedOrder.total),
-			userId: updatedOrder.userId,
-			address: updatedOrder.addressLocation,
-			shipmentType: updatedOrder.shipmentType,
-			orderStatus: updatedOrder.orderStatus,
-			productsList: updatedOrder.OrderProduct.map(({ price, ...product }) => ({ price: Number(price), ...product }))
-		}
+		const { addressLocation, OrderProduct, ...orderData } = updatedOrder
+
+		return { ...orderData, address: addressLocation, productsList: OrderProduct }
 	}
 
-	async findOrder(orderId: Order['id']) {
+	async get(): Promise<Order[]> {
+		const fetchOrders = await this.ordersModel.order.findMany({ include: { address: true, OrderProduct: true } })
+		return fetchOrders.map(({ OrderProduct, addressLocation, ...order }) => ({ ...order, productsList: OrderProduct, address: addressLocation }))
+	}
+
+	async getById(orderId: Order['id']) {
 		const order = await this.ordersModel.order.findUnique({ where: { id: orderId } })
 		return order
 	}
 
-	async findUser(userId: User['id']): Promise<Partial<User>> {
+	async findUser(userId: User['id']): Promise<boolean> {
 		const user = await this.ordersModel.user.findUnique({
 			where: { id: userId },
-			include: { address: true }
 		})
 
-		if (!user) {
-			throw new Error('Invalid user ID.')
-		}
-
-		return {
-			id: user.id,
-			email: user.email,
-			name: user.name,
-			address: user.address,
-		}
+		return user ? true : false
 	}
 
 	findAddress(userAddressList: UserAddress[], addressId: UserAddress['id']): UserAddress['id'] {
