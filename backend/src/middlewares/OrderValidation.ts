@@ -7,7 +7,6 @@ export default class OrderValidation {
 		const { discount, shipping, subtotal, total, userId, address, shipmentType, productsList }: OrderRequest = req.body
 
 		const productsTotal = productsList
-			.map(({ price, ...product }) => ({ price: Number(price), ...product }))
 			.reduce((acc: number, orderProduct) => acc + orderProduct.price * orderProduct.quantity, 0)
 	
 		if (productsTotal !== subtotal) {
