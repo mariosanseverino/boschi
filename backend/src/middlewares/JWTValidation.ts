@@ -6,7 +6,7 @@ export default class JWTValidation {
 		const authHeader = req.headers.authorization
   
 		if (!authHeader) {
-			return res.status(401).json({ message: 'No token provided' })
+			return res.status(401).json({ message: 'No token provided.' })
 		}
   
 		const [, token] = authHeader.split(' ')
@@ -15,7 +15,7 @@ export default class JWTValidation {
 			JWT.validate(token)
 			next()
 		} catch (err) {
-			return res.status(401).json({ message: 'Invalid token' })
+			return res.status(401).json({ message: 'Invalid token.' })
 		}
 	}
 }
