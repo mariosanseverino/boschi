@@ -15,7 +15,10 @@ async function main() {
 			email: 'mario@boschi.com',
 			password: hashedAdminPassword,
 			name: 'Mario Sanseverino',
-			address: 'Av. Padre Leopoldo Brentano, 110 - Porto Alegre/RS',
+			address: {
+				create: [
+					{ location: 'Av. Padre Leopoldo Brentano, 110 - Porto Alegre/RS' }
+				]},
 			birthday: '25051993',
 		}
 	})
@@ -24,7 +27,9 @@ async function main() {
 			email: 'testemail@gmail.com',
 			password: hashedTestPassword,
 			name: 'Test',
-			address: 'Test',
+			address: { create: [
+				{ location: 'Test' }
+			]},
 			birthday: '08032024',
 		}
 	})
