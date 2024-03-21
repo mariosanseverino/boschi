@@ -23,12 +23,7 @@ export default class ProductsModel {
 			throw new Error('Unable to get products.')
 		}
 
-		return fetchAllProducts.map((product) => ({
-			id: product.id,
-			name: product.name,
-			description: product.description,
-			variants: product.variants.map(({ price, ...variant }) => ({ price: Number(price), ...variant }))
-		}))
+		return fetchAllProducts
 	}
 
 	async getById(reqId: number): Promise<Product> {
@@ -37,10 +32,7 @@ export default class ProductsModel {
 			throw new Error('Invalid product ID.')
 		}
 
-		return {
-			...fetchProduct,
-			variants: fetchProduct.variants.map(({ price, ...variant }) => ({ ...variant, price: Number(price) }))
-		}
+		return fetchProduct
 	}
 
 	async create(product: NewProductRequest): Promise<Product> {
@@ -64,7 +56,7 @@ export default class ProductsModel {
 			id: newProduct.id,
 			name: newProduct.name,
 			description: newProduct.description,
-			variants: this.sortVariants(newProduct.variants.map(({ price, ...variant }) => ({ ...variant, price: Number(price) })))
+			variants: this.sortVariants(newProduct.variants)
 		}
 	}
 
@@ -93,7 +85,7 @@ export default class ProductsModel {
 			id,
 			name: updatedProduct!.name,
 			description: updatedProduct!.description,
-			variants: this.sortVariants(updatedProduct!.variants.map(({ price, ...variant }) => ({ ...variant, price: Number(price) })))
+			variants: this.sortVariants(updatedProduct!.variants)
 		}
 	}
 
@@ -110,13 +102,13 @@ export default class ProductsModel {
 			data: variant
 		})
 
-		return { ...updatedVariant, price: Number(updatedVariant.price) }
+		return updatedVariant
 	}
 
 	async delete(productId: number): Promise<Product> {
-		const deleteProduct = await this.productsModel.product.findUnique({ where: { id: productId }, include: { variants: true } })
+		const deletedProduct = await this.productsModel.product.findUnique({ where: { id: productId }, include: { variants: true } })
 
-		if (!deleteProduct) {
+		if (!deletedProduct) {
 			throw new Error('Product not found.')
 		}
 
@@ -125,9 +117,9 @@ export default class ProductsModel {
 
 		return {
 			id: productId,
-			name: deleteProduct.name,
-			description: deleteProduct.description,
-			variants: this.sortVariants(deleteProduct.variants.map(({ price, ...variant }) => ({ ...variant, price: Number(price) })))
+			name: deletedProduct.name,
+			description: deletedProduct.description,
+			variants: deletedProduct.variants
 		}
 	}
 }
