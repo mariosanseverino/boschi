@@ -53,4 +53,14 @@ export default class OrderValidation {
 
 		next()
 	}
+
+	static validateId(req: Request, res: Response, next: NextFunction) {
+		const { id } = req.params
+
+		if (!id) {
+			return res.status(ServiceCodes.INVALID_DATA).json({ message: 'Order ID is invalid.' })
+		}
+
+		next()
+	}
 }

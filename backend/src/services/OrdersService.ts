@@ -26,4 +26,24 @@ export default class OrdersService {
 			return { status: 'UNAUTHORIZED', data: { message: errorMessage.message } }
 		}
 	}
+	
+	async get(): Promise<ServiceResponse<Order[]>> {
+		try {
+			const orders = await this.ordersModel.get()
+			return { status: 'SUCCESSFUL', data: orders }
+		} catch (error) {
+			const errorMessage = error as Error
+			return { status: 'UNAUTHORIZED', data: { message: errorMessage.message } }
+		}
+	}
+
+	async getById(orderId: Order['id']): Promise<ServiceResponse<Order>> {
+		try {
+			const order = await this.ordersModel.getById(orderId)
+			return { status: 'SUCCESSFUL', data: order }
+		} catch (error) {
+			const errorMessage = error as Error
+			return { status: 'UNAUTHORIZED', data: { message: errorMessage.message } }
+		}
+	}
 }

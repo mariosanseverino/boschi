@@ -93,7 +93,7 @@ export default class OrdersModel {
 			})
 
 		if (!updatedOrder) {
-			throw new Error(`Unable to update order with ID ${orderId}`)
+			throw new Error(`Unable to update order with ID ${orderId}.`)
 		}
 
 		const { addressLocation, OrderProduct, ...orderData } = updatedOrder
@@ -103,12 +103,24 @@ export default class OrdersModel {
 
 	async get(): Promise<Order[]> {
 		const fetchOrders = await this.ordersModel.order.findMany({ include: { address: true, OrderProduct: true } })
+		
+		if (!fetchOrders) {
+			throw new Error('Unable to fetch orders.')
+		}
+
 		return fetchOrders.map(({ OrderProduct, addressLocation, ...order }) => ({ ...order, productsList: OrderProduct, address: addressLocation }))
 	}
 
-	async getById(orderId: Order['id']) {
-		const order = await this.ordersModel.order.findUnique({ where: { id: orderId } })
-		return order
+	async getById(orderId: Order['id']): Promise<Order> {
+		const order = await this.ordersModel.order.findUnique({ where: { id: orderId }, include: { address: true, OrderProduct: true } })
+
+		if (!order) {
+			throw new Error(`Unable to find order with ID ${ orderId }.`)
+		}
+		
+		const { OrderProduct, addressLocation, ...orderData } = order
+
+		return { ...orderData, address: addressLocation, productsList: OrderProduct }
 	}
 
 	async findUser(userId: User['id']): Promise<boolean> {

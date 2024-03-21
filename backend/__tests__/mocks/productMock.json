@@ -1,22 +1,24 @@
 {
   "name": "Longsleeve T-Shirt",
-  "price": 180,
   "description": "Made of 100% Persian Cotton",
   "variants": [
     {
+      "price": 180,
       "color": "White",
       "size": "S",
-      "quantity": 100
+      "quantity": 10
     },
     {
+      "price": 180,
       "color": "White",
       "size": "M",
-      "quantity": 100
+      "quantity": 10
     },
     {
+      "price": 180,
       "color": "White",
       "size": "L",
-      "quantity": 100
+      "quantity": 10
     }
   ]
 }
