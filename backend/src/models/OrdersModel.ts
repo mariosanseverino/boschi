@@ -1,31 +1,30 @@
 import { PrismaClient } from '@prisma/client'
-import { IOrder, IOrderProduct, IOrderRequest, IOrderUpdate, OrderStatus } from '../interfaces/orders/IOrder'
-import { IUser, IUserAddress } from '../interfaces/users/IUser'
-import { IProductVariant } from '../interfaces/products/IProduct'
+import { Order, OrderRequest, OrderUpdate } from '../interfaces/orders/Order'
+import { User, UserAddress } from '../interfaces/users/User'
 
 export default class OrdersModel {
 	private ordersModel = new PrismaClient()
 
-	async create({ discount, total, userId, addressId, shipmentType, productsList }: IOrderRequest): Promise<IOrder> {
+	async create({ discount, shipping, subtotal, total, userId, address, shipmentType, productsList }: OrderRequest): Promise<Order> {
 		await this.findProducts(productsList)
 		const user = await this.findUser(userId)
 
-		if (!user.address) {
-			throw new Error('User has no address.')
+		if (!user) {
+			throw new Error('User invalid.')
 		}
-
-		const address = this.findAddress(user.address, addressId)
 
 		const newOrder = await this.ordersModel.order.create({
 			data: {
 				discount,
+				shipping,
+				subtotal,
 				total,
 				userId,
-				addressId,
+				addressLocation: address,
 				shipmentType,
 				orderStatus: 'Pending',
 				OrderProduct: {
-					create: await Promise.all(productsList.map(async ({ productId, quantity, color, size }) => {
+					create: await Promise.all(productsList.map(async ({ productId, price, quantity, color, size }) => {
 						const productVariant = await this.ordersModel.productVariant.findUnique({
 							where: {
 								color_size_productId: {
@@ -39,7 +38,6 @@ export default class OrdersModel {
 						}
 
 						return {
-							quantity,
 							productVariant: {
 								connect: {
 									color_size_productId: {
@@ -48,7 +46,9 @@ export default class OrdersModel {
 										productId: productVariant.productId
 									}
 								}
-							}
+							},
+							price,
+							quantity
 						}
 					}))
 				}
@@ -64,17 +64,19 @@ export default class OrdersModel {
 		return {
 			id: newOrder.id,
 			discount,
+			shipping,
+			subtotal,
 			total,
 			userId,
 			address,
 			shipmentType,
 			orderStatus: newOrder.orderStatus,
-			productsList: this.convertToProductsList(productsList)
+			productsList
 		}
 	}
 
-	async update({ orderId, newOrderStatus }: IOrderUpdate): Promise<IOrder> {
-		const fetchOrder = await this.findOrder(orderId)
+	async update({ orderId, newOrderStatus }: OrderUpdate): Promise<Order> {
+		const fetchOrder = await this.getById(orderId)
 
 		if (!fetchOrder) {
 			throw new Error('Order not found.')
@@ -83,53 +85,53 @@ export default class OrdersModel {
 		const updatedOrder = await this.ordersModel.order.update(
 			{
 				where: { id: fetchOrder?.id },
-				data: { orderStatus: newOrderStatus as OrderStatus },
+				data: { orderStatus: newOrderStatus },
 				include: {
 					address: true,
 					OrderProduct: true
-				}
+				},
 			})
 
 		if (!updatedOrder) {
-			throw new Error(`Unable to update order with ID ${orderId}`)
+			throw new Error(`Unable to update order with ID ${orderId}.`)
 		}
 
-		return {
-			id: updatedOrder.id,
-			discount: Number(updatedOrder.discount),
-			total: Number(updatedOrder.total),
-			userId: updatedOrder.userId,
-			address: updatedOrder.addressId,
-			shipmentType: updatedOrder.shipmentType,
-			orderStatus: updatedOrder.orderStatus,
-			productsList: this.convertToProductsList(updatedOrder.OrderProduct)
+		const { addressLocation, OrderProduct, ...orderData } = updatedOrder
+
+		return { ...orderData, address: addressLocation, productsList: OrderProduct }
+	}
+
+	async get(): Promise<Order[]> {
+		const fetchOrders = await this.ordersModel.order.findMany({ include: { address: true, OrderProduct: true } })
+		
+		if (!fetchOrders) {
+			throw new Error('Unable to fetch orders.')
 		}
+
+		return fetchOrders.map(({ OrderProduct, addressLocation, ...order }) => ({ ...order, productsList: OrderProduct, address: addressLocation }))
 	}
 
-	async findOrder(orderId: IOrder['id']) {
-		const order = await this.ordersModel.order.findUnique({ where: { id: orderId } })
-		return order
+	async getById(orderId: Order['id']): Promise<Order> {
+		const order = await this.ordersModel.order.findUnique({ where: { id: orderId }, include: { address: true, OrderProduct: true } })
+
+		if (!order) {
+			throw new Error(`Unable to find order with ID ${ orderId }.`)
+		}
+		
+		const { OrderProduct, addressLocation, ...orderData } = order
+
+		return { ...orderData, address: addressLocation, productsList: OrderProduct }
 	}
 
-	async findUser(userId: IUser['id']): Promise<Partial<IUser>> {
+	async findUser(userId: User['id']): Promise<boolean> {
 		const user = await this.ordersModel.user.findUnique({
 			where: { id: userId },
-			include: { address: true }
 		})
 
-		if (!user) {
-			throw new Error('Invalid user ID.')
-		}
-
-		return {
-			id: user.id,
-			email: user.email,
-			name: user.name,
-			address: user.address,
-		}
+		return user ? true : false
 	}
 
-	findAddress(userAddressList: IUserAddress[], addressId: IUserAddress['id']): IUserAddress['id'] {
+	findAddress(userAddressList: UserAddress[], addressId: UserAddress['id']): UserAddress['id'] {
 		const address = userAddressList.find((address) => address.id === addressId)
 		if (!address) {
 			throw new Error('User address not found.')
@@ -137,7 +139,7 @@ export default class OrdersModel {
 		return address.id
 	}
 
-	async findProducts(productsList: IOrderRequest['productsList']) {
+	async findProducts(productsList: OrderRequest['productsList']) {
 		await Promise.all(
 			productsList.map(async (product) => {
 				const findProduct = await this.ordersModel.product.findUnique({ where: { id: product.productId } })
@@ -148,7 +150,7 @@ export default class OrdersModel {
 		)
 	}
 
-	async updateStock(productsList: IOrderRequest['productsList']) {
+	async updateStock(productsList: OrderRequest['productsList']) {
 		await Promise.all(
 			productsList.map(async ({ productId, quantity, color, size }) => {
 				const productVariant = await this.ordersModel.productVariant.findUnique({
@@ -183,14 +185,5 @@ export default class OrdersModel {
 				})
 			})
 		)
-	}
-
-	convertToProductsList(OrderProduct: IProductVariant[]): IOrderProduct[] {
-		return OrderProduct.map((product) => ({
-			productId: product.productId!,
-			productVariantColor: product.color,
-			productVariantSize: product.size,
-			quantity: product.quantity
-		}))
 	}
 }

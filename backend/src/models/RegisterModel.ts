@@ -1,43 +1,41 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { PrismaClient } from '@prisma/client'
-import { IUserRequest } from '../interfaces/users/IUser'
-import { IRegisterModel, IRegisterProps } from '../interfaces/register/IRegister'
+import { NewUser } from '../interfaces/users/User'
+import { UserRegisterRequest } from '../interfaces/users/User'
 
-export default class RegisterModel implements IRegisterModel {
+export default class RegisterModel {
 	private registerModel = new PrismaClient()
 
-	async register(
-		{ email,
-			password: reqPassword,
-			name,
-			address,
-			birthday
-		}: IRegisterProps
-	): Promise<IUserRequest> {
+	async register({ email, password: reqPassword, name, address, birthday }: UserRegisterRequest): Promise<NewUser> {
 		await this.verifyEmail(email)
-	
 		const existingAddress = await this.verifyAddress(address)
-	
+
 		const newUser = await this.registerModel.user.create(
 			{
 				data: {
 					email,
 					password: reqPassword,
 					name,
-					address: existingAddress 
-						? { connect: { id: existingAddress.id } } 
+					address: existingAddress
+						? { connect: { id: existingAddress.id } }
 						: { create: { location: address } },
 					birthday
-				}
+				},
+				include: { address: true }
 			}
 		)
-		const { password, ...userData } = newUser
-	
-		return userData as IUserRequest
+
+		return {
+			id: newUser.id,
+			name: newUser.name,
+			email: newUser.email,
+			address: newUser.address,
+			birthday: newUser.birthday
+		}
 	}
 
 	async verifyAddress(address: string) {
-		return await this.registerModel.userAddress.findFirst({ where: { location: address }})
+		return await this.registerModel.userAddress.findFirst({ where: { location: address } })
 	}
 
 	async verifyEmail(email: string) {

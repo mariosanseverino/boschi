@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { ServiceCodes } from '../interfaces/ServiceResponse'
 import ProductsService from '../services/ProductsService'
+import { NewProductRequest } from '../interfaces/products/Product'
 
 export default class ProductsController {
 	constructor(
@@ -21,8 +22,8 @@ export default class ProductsController {
 	}
 
 	async create(req: Request, res: Response): Promise<Response> {
-		const { name, price, description, variants } = req.body
-		const serviceResponse = await this.productsService.create({ name, price, description, variants })
+		const { name, description, variants }: NewProductRequest = req.body
+		const serviceResponse = await this.productsService.create({ name, description, variants })
 		const { status, data } = serviceResponse
 		return res.status(ServiceCodes[status]).json(data)
 	}

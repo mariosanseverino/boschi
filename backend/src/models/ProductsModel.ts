@@ -1,52 +1,41 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { PrismaClient } from '@prisma/client'
-import { IProduct, IProductCreateProps, IProductUpdateData, IProductUpdateProps, IProductVariant } from '../interfaces/products/IProduct'
+import { Product, NewProductRequest, ProductUpdateRequest, ProductVariant } from '../interfaces/products/Product'
 
 export default class ProductsModel {
 	private productsModel = new PrismaClient()
 
-	private processVariants(variants: IProductVariant[]): IProductVariant[] {
+	private sortVariants(variants: ProductVariant[]): ProductVariant[] {
 		return variants
 			.map(({ productId, ...variant }) => variant)
 			.sort((a, b) => {
 				if (a.color < b.color) return -1
 				if (a.color > b.color) return 1
-    
+
 				const sizes = ['S', 'M', 'L', 'XL']
 				return sizes.indexOf(a.size) - sizes.indexOf(b.size)
 			})
 	}
 
-	async get(): Promise<IProduct[]> {
+	async get(): Promise<Product[]> {
 		const fetchAllProducts = await this.productsModel.product.findMany({ include: { variants: true } })
 		if (!fetchAllProducts) {
 			throw new Error('Unable to get products.')
 		}
 
-		return fetchAllProducts.map((product) => ({
-			id: product.id,
-			name: product.name,
-			price: Number(product.price),
-			description: product.description,
-			variants: this.processVariants(product.variants)
-		}))
+		return fetchAllProducts
 	}
 
-	async getById(reqId: number): Promise<IProduct> {
+	async getById(reqId: number): Promise<Product> {
 		const fetchProduct = await this.productsModel.product.findFirst({ where: { id: reqId }, include: { variants: true } })
 		if (!fetchProduct) {
 			throw new Error('Invalid product ID.')
 		}
 
-		return {
-			...fetchProduct,
-			price: Number(fetchProduct.price),
-			variants: fetchProduct.variants
-				.map(({ productId, ...variant }) => variant)
-		}
+		return fetchProduct
 	}
 
-	async create(product: IProductCreateProps): Promise<IProduct> {
+	async create(product: NewProductRequest): Promise<Product> {
 		const newProduct = await this.productsModel.product.create({
 			data: {
 				...product,
@@ -58,7 +47,7 @@ export default class ProductsModel {
 				variants: true
 			}
 		})
-        
+
 		if (!newProduct) {
 			throw new Error('Unable to create new product.')
 		}
@@ -66,71 +55,60 @@ export default class ProductsModel {
 		return {
 			id: newProduct.id,
 			name: newProduct.name,
-			price: Number(newProduct.price),
 			description: newProduct.description,
-			variants: this.processVariants(newProduct.variants)
+			variants: this.sortVariants(newProduct.variants)
 		}
 	}
-    
-	async update({ id, updates }: IProductUpdateProps): Promise<IProduct> {
+
+	async update({ id, updates }: ProductUpdateRequest): Promise<Product> {
 		if (!updates) {
 			throw new Error('No properties found on request.')
 		}
 
-		const findProduct = await this.productsModel.product.findUnique({
-			where: { id },
-			include: { variants: true }
-		})		
-    
+		const findProduct = await this.productsModel.product.findUnique({ where: { id } })
+
 		if (!findProduct) {
 			throw new Error('Product not found.')
 		}
 
-		const updateData: IProductUpdateData = {}
-		
-		for (const property in updates) {
-			const key = property as keyof IProductUpdateData
-			
-			if (key === 'price') {
-				updateData['price'] = Number(updates[key])
-			} else {
-				if (typeof updates[key] === 'string') {
-					updateData[key] = updates[key]
-				}
-			}
-		}
-		
-		const updatedProduct = await this.productsModel.product.update({
+		await this.productsModel.product.update({
 			where: { id },
-			data: updateData
+			data: {
+				name: updates.name,
+				description: updates.description
+			},
 		})
+
+		const updatedProduct = await this.productsModel.product.findUnique({ where: { id }, include: { variants: true } })
 
 		return {
 			id,
-			name: updatedProduct.name,
-			price: Number(updatedProduct.price),
-			description: updatedProduct.description,
-			variants: this.processVariants(findProduct.variants)
+			name: updatedProduct!.name,
+			description: updatedProduct!.description,
+			variants: this.sortVariants(updatedProduct!.variants)
 		}
 	}
 
-	async updateVariant(productId: number, variant: IProductVariant): Promise<IProductVariant> {
+	async updateVariant(productId: number, variant: ProductVariant): Promise<ProductVariant> {
 		const { color, size } = variant
 		const updatedVariant = await this.productsModel.productVariant.update({
-			where: { color_size_productId: {
-				color,
-				size,
-				productId
-			} },
+			where: {
+				color_size_productId: {
+					color,
+					size,
+					productId
+				}
+			},
 			data: variant
 		})
+
 		return updatedVariant
 	}
 
-	async delete(productId: number): Promise<IProduct> {
-		const deleteProduct = await this.productsModel.product.findUnique({ where: { id: productId }, include: { variants : true } })
+	async delete(productId: number): Promise<Product> {
+		const deletedProduct = await this.productsModel.product.findUnique({ where: { id: productId }, include: { variants: true } })
 
-		if (!deleteProduct) {
+		if (!deletedProduct) {
 			throw new Error('Product not found.')
 		}
 
@@ -139,10 +117,9 @@ export default class ProductsModel {
 
 		return {
 			id: productId,
-			name: deleteProduct.name,
-			price: Number(deleteProduct.price),
-			description: deleteProduct.description,
-			variants: this.processVariants(deleteProduct.variants)
+			name: deletedProduct.name,
+			description: deletedProduct.description,
+			variants: deletedProduct.variants
 		}
 	}
 }

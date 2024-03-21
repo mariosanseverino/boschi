@@ -8,8 +8,8 @@ export default class OrdersController {
 	) { }
 
 	async create(req: Request, res: Response): Promise<Response> {
-		const { discount, total, userId, addressId, shipmentTypeId, productsList } = req.body
-		const serviceResponse = await this.ordersService.create({ discount, total, userId, addressId, shipmentType: shipmentTypeId, productsList })
+		const { discount, shipping, subtotal, total, userId, address, shipmentType, productsList } = req.body
+		const serviceResponse = await this.ordersService.create({ discount, shipping, subtotal, total, userId, address, shipmentType, productsList })
 		const { status, data } = serviceResponse
 		return res.status(ServiceCodes[status]).json(data)
 	}
@@ -18,6 +18,19 @@ export default class OrdersController {
 		const { id } = req.params
 		const { newOrderStatus } = req.body
 		const serviceResponse = await this.ordersService.update({ orderId: Number(id), newOrderStatus })
+		const { status, data } = serviceResponse
+		return res.status(ServiceCodes[status]).json(data)
+	}
+	
+	async get(_req: Request, res: Response): Promise<Response> {
+		const serviceResponse = await this.ordersService.get()		
+		const { status, data } = serviceResponse
+		return res.status(ServiceCodes[status]).json(data)
+	}
+	
+	async getById(req: Request, res: Response): Promise<Response> {
+		const { id } = req.params
+		const serviceResponse = await this.ordersService.getById(Number(id))
 		const { status, data } = serviceResponse
 		return res.status(ServiceCodes[status]).json(data)
 	}

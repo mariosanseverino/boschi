@@ -29,12 +29,12 @@ model UserAddress {
 model Product {
   id       Int   @id @unique @default(autoincrement())
   name     String
-  price    Decimal
   description String
   variants ProductVariant[]
 }
 
 model ProductVariant {
+  price    Float
   color    String
   size     String
   quantity Int
@@ -62,12 +62,14 @@ enum OrderStatus {
 
 model Order {
   id       Int   @id @unique @default(autoincrement())
-  discount Decimal
-  total    Decimal
+  discount Float
+  shipping Float
+  subtotal Float
+  total Float
   user     User     @relation(fields: [userId], references: [id])
   userId   Int
-  address  UserAddress @relation(fields: [addressId], references: [id])
-  addressId  Int
+  address  UserAddress @relation(fields: [addressLocation], references: [location])
+  addressLocation String
   OrderProduct OrderProduct[]
   shipmentType ShipmentType
   orderStatus OrderStatus
@@ -76,6 +78,7 @@ model Order {
 model OrderProduct {
   order    Order   @relation(fields: [orderId], references: [id])
   productVariant  ProductVariant @relation(fields: [color, size, productId], references: [color, size, productId])
+  price Float
   color String
   size String
   quantity Int

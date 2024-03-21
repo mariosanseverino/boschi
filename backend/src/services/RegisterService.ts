@@ -1,6 +1,6 @@
 import { ServiceResponse } from '../interfaces/ServiceResponse'
-import { IRegisterProps } from '../interfaces/register/IRegister'
-import { IUserRequest } from '../interfaces/users/IUser'
+import { UserRegisterRequest } from '../interfaces/users/User'
+import { NewUser } from '../interfaces/users/User'
 import RegisterModel from '../models/RegisterModel'
 import BCrypt from '../utils/BCrypt'
 
@@ -9,14 +9,7 @@ export default class RegisterService {
 		private registerModel = new RegisterModel()
 	) { }
 
-	async register(
-		{ email,
-			password,
-			name,
-			address,
-			birthday
-		}: IRegisterProps
-	): Promise<ServiceResponse<IUserRequest>> {
+	async register({ email, password, name, address, birthday }: UserRegisterRequest): Promise<ServiceResponse<NewUser>> {
 		try {
 			const hashedPassword = await BCrypt.hash(password, 10)
 			const userData = await this.registerModel.register(
