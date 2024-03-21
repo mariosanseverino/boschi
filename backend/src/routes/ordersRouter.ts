@@ -14,4 +14,11 @@ ordersRouter.post(
 	(req: Request, res: Response) => ordersController.create(req, res)
 )
 
+ordersRouter.put(
+	'/:id',
+	OrderValidation.validateUpdate,
+	JWTValidation.verifyJWT,
+	(req: Request, res: Response) => ordersController.update(req, res)
+)
+
 export default ordersRouter

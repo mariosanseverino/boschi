@@ -1,11 +1,7 @@
 import { IProduct, IProductVariant } from '../products/IProduct'
 import { IUser, IUserAddress } from '../users/IUser'
 
-export enum ShipmentType {
-    Standard = 1,
-    Express = 2,
-    NextDay = 3
-}
+export type ShipmentType = 'Standard' | 'Express' | 'NextDay'
 
 export type OrderStatus = 'Pending' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled' | 'Refunded'
 
@@ -15,7 +11,7 @@ export interface IOrder {
     total: number,
     userId: IUser['id'],
     address: IUserAddress['id'],
-    shipmentTypeId: ShipmentType,
+    shipmentType: ShipmentType,
     orderStatus: OrderStatus,
     productsList: IOrderProduct[],
 }
@@ -25,7 +21,7 @@ export interface IOrderRequest {
     total: number,
     userId: IUser['id'],
     addressId: IUserAddress['id'],
-    shipmentTypeId: ShipmentType,
+    shipmentType: ShipmentType,
     productsList: {
         productId: number,
         quantity: number,

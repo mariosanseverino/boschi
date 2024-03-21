@@ -45,10 +45,19 @@ model ProductVariant {
    @@unique([color, size, productId])
 }
 
-model ShipmentType {
-  id       Int @id @default(autoincrement())
-  type     String @unique
-  Order    Order[]
+enum ShipmentType {
+  Standard
+  Express
+  NextDay
+}
+
+enum OrderStatus {
+  Pending
+  Processing
+  Shipped
+  Delivered
+  Canceled
+  Refunded
 }
 
 model Order {
@@ -60,9 +69,8 @@ model Order {
   address  UserAddress @relation(fields: [addressId], references: [id])
   addressId  Int
   OrderProduct OrderProduct[]
-  shipmentType ShipmentType  @relation(fields: [shipmentTypeId], references: [id])
-  shipmentTypeId Int
-  orderStatus String
+  shipmentType ShipmentType
+  orderStatus OrderStatus
 }
 
 model OrderProduct {

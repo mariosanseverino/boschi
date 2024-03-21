@@ -7,7 +7,7 @@ export default class RegisterController {
         private registerService = new RegisterService()
 	) {}
 
-	async register(req: Request, res: Response) {
+	async register(req: Request, res: Response): Promise<Response> {
 		const { email, password, name, address, birthday } = req.body
 		const serviceResponse = await this.registerService.register({ email, password, name, address, birthday })
 		const { status, data: userData } = serviceResponse
