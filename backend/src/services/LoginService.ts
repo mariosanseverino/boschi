@@ -1,17 +1,18 @@
 import LoginModel from '../models/LoginModel'
 import { ServiceResponse } from '../interfaces/ServiceResponse'
-import { IToken } from '../interfaces/users/IToken'
+import { Token } from '../interfaces/users/Token'
 import JWT from '../utils/JWT'
+import { LoginRequest } from '../interfaces/users/User'
 
 export default class LoginService {
 	constructor(
-        private loginModel = new LoginModel(),
-	) {}
+		private loginModel = new LoginModel(),
+	) { }
 
-	async login(email: string, password: string): Promise<ServiceResponse<IToken>> {
+	async login({ email, password }: LoginRequest): Promise<ServiceResponse<Token>> {
 		try {
-			const userData = await this.loginModel.login(email, password)
-			const token = JWT.sign({ id: userData.id })
+			const userId = await this.loginModel.login(email, password)
+			const token = JWT.sign({ id: userId })
 			return { status: 'SUCCESSFUL', data: { token: token } }
 		} catch (error) {
 			const errorMessage = error as Error

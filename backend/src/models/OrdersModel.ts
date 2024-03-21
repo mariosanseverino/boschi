@@ -1,12 +1,11 @@
 import { PrismaClient } from '@prisma/client'
-import { IOrder, IOrderProduct, IOrderRequest, IOrderUpdate, OrderStatus } from '../interfaces/orders/IOrder'
-import { IUser, IUserAddress } from '../interfaces/users/IUser'
-import { IProductVariant } from '../interfaces/products/IProduct'
+import { Order, OrderRequest, OrderUpdate, OrderStatus } from '../interfaces/orders/Order'
+import { User, UserAddress } from '../interfaces/users/User'
 
 export default class OrdersModel {
 	private ordersModel = new PrismaClient()
 
-	async create({ discount, total, userId, addressId, shipmentType, productsList }: IOrderRequest): Promise<IOrder> {
+	async create({ discount, shipping, subtotal, total, userId, address, shipmentType, productsList }: OrderRequest): Promise<Order> {
 		await this.findProducts(productsList)
 		const user = await this.findUser(userId)
 
@@ -14,18 +13,18 @@ export default class OrdersModel {
 			throw new Error('User has no address.')
 		}
 
-		const address = this.findAddress(user.address, addressId)
-
 		const newOrder = await this.ordersModel.order.create({
 			data: {
 				discount,
+				shipping,
+				subtotal,
 				total,
 				userId,
-				addressId,
+				addressLocation: address,
 				shipmentType,
 				orderStatus: 'Pending',
 				OrderProduct: {
-					create: await Promise.all(productsList.map(async ({ productId, quantity, color, size }) => {
+					create: await Promise.all(productsList.map(async ({ productId, price, quantity, color, size }) => {
 						const productVariant = await this.ordersModel.productVariant.findUnique({
 							where: {
 								color_size_productId: {
@@ -39,7 +38,6 @@ export default class OrdersModel {
 						}
 
 						return {
-							quantity,
 							productVariant: {
 								connect: {
 									color_size_productId: {
@@ -48,7 +46,9 @@ export default class OrdersModel {
 										productId: productVariant.productId
 									}
 								}
-							}
+							},
+							price,
+							quantity
 						}
 					}))
 				}
@@ -64,16 +64,18 @@ export default class OrdersModel {
 		return {
 			id: newOrder.id,
 			discount,
+			shipping,
+			subtotal,
 			total,
 			userId,
 			address,
 			shipmentType,
 			orderStatus: newOrder.orderStatus,
-			productsList: this.convertToProductsList(productsList)
+			productsList
 		}
 	}
 
-	async update({ orderId, newOrderStatus }: IOrderUpdate): Promise<IOrder> {
+	async update({ orderId, newOrderStatus }: OrderUpdate): Promise<Order> {
 		const fetchOrder = await this.findOrder(orderId)
 
 		if (!fetchOrder) {
@@ -87,7 +89,7 @@ export default class OrdersModel {
 				include: {
 					address: true,
 					OrderProduct: true
-				}
+				},
 			})
 
 		if (!updatedOrder) {
@@ -97,21 +99,23 @@ export default class OrdersModel {
 		return {
 			id: updatedOrder.id,
 			discount: Number(updatedOrder.discount),
+			shipping: Number(updatedOrder.shipping),
+			subtotal: Number(updatedOrder.subtotal),
 			total: Number(updatedOrder.total),
 			userId: updatedOrder.userId,
-			address: updatedOrder.addressId,
+			address: updatedOrder.addressLocation,
 			shipmentType: updatedOrder.shipmentType,
 			orderStatus: updatedOrder.orderStatus,
-			productsList: this.convertToProductsList(updatedOrder.OrderProduct)
+			productsList: updatedOrder.OrderProduct.map(({ price, ...product }) => ({ price: Number(price), ...product }))
 		}
 	}
 
-	async findOrder(orderId: IOrder['id']) {
+	async findOrder(orderId: Order['id']) {
 		const order = await this.ordersModel.order.findUnique({ where: { id: orderId } })
 		return order
 	}
 
-	async findUser(userId: IUser['id']): Promise<Partial<IUser>> {
+	async findUser(userId: User['id']): Promise<Partial<User>> {
 		const user = await this.ordersModel.user.findUnique({
 			where: { id: userId },
 			include: { address: true }
@@ -129,7 +133,7 @@ export default class OrdersModel {
 		}
 	}
 
-	findAddress(userAddressList: IUserAddress[], addressId: IUserAddress['id']): IUserAddress['id'] {
+	findAddress(userAddressList: UserAddress[], addressId: UserAddress['id']): UserAddress['id'] {
 		const address = userAddressList.find((address) => address.id === addressId)
 		if (!address) {
 			throw new Error('User address not found.')
@@ -137,7 +141,7 @@ export default class OrdersModel {
 		return address.id
 	}
 
-	async findProducts(productsList: IOrderRequest['productsList']) {
+	async findProducts(productsList: OrderRequest['productsList']) {
 		await Promise.all(
 			productsList.map(async (product) => {
 				const findProduct = await this.ordersModel.product.findUnique({ where: { id: product.productId } })
@@ -148,7 +152,7 @@ export default class OrdersModel {
 		)
 	}
 
-	async updateStock(productsList: IOrderRequest['productsList']) {
+	async updateStock(productsList: OrderRequest['productsList']) {
 		await Promise.all(
 			productsList.map(async ({ productId, quantity, color, size }) => {
 				const productVariant = await this.ordersModel.productVariant.findUnique({
@@ -183,14 +187,5 @@ export default class OrdersModel {
 				})
 			})
 		)
-	}
-
-	convertToProductsList(OrderProduct: IProductVariant[]): IOrderProduct[] {
-		return OrderProduct.map((product) => ({
-			productId: product.productId!,
-			productVariantColor: product.color,
-			productVariantSize: product.size,
-			quantity: product.quantity
-		}))
 	}
 }
