@@ -6,9 +6,8 @@ export default class OrderValidation {
 	static validateOrder(req: Request, res: Response, next: NextFunction) {
 		const { discount, shipping, subtotal, total, userId, address, shipmentType, productsList }: OrderRequest = req.body
 
-		const productsTotal = productsList
-			.reduce((acc: number, orderProduct) => acc + orderProduct.price * orderProduct.quantity, 0)
-	
+		const productsTotal = productsList.reduce((acc, product) => (acc + (product.price * product.quantity)), 0)
+
 		if (productsTotal !== subtotal) {
 			return res.status(ServiceCodes.INVALID_DATA).json({ message: 'Products total and subtotal does not match.' })
 		}

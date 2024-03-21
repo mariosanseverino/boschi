@@ -11,7 +11,7 @@ export default class LoginService {
 
 	async login({ email, password }: LoginRequest): Promise<ServiceResponse<Token>> {
 		try {
-			const userId = await this.loginModel.login(email, password)
+			const userId = await this.loginModel.login({ email, password })
 			const token = JWT.sign({ id: userId })
 			return { status: 'SUCCESSFUL', data: { token: token } }
 		} catch (error) {
