@@ -8,8 +8,10 @@ RUN npm install
 
 COPY . .
 
+RUN npm ci
+
 RUN npm run build
 
 EXPOSE 5433
 
-CMD [ "node", "build/server.js" ]
+CMD [ "node", "build/src/server.js" ]
