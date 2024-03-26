@@ -15,6 +15,11 @@ export default function Home() {
 			>
 					login
 			</Link>
+			<Link
+				href='/shop'
+			>
+					shop
+			</Link>
 		</main>
 	)
 }

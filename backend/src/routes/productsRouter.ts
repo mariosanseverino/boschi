@@ -9,14 +9,12 @@ const productsRouter = Router()
 
 productsRouter.get(
 	'/',
-	JWTValidation.verifyJWT,
 	(req: Request, res: Response) => productsController.get(req, res)
 )
 
 productsRouter.get(
 	'/:id',
 	ProductsValidation.verifyProductId,
-	JWTValidation.verifyJWT,
 	(req: Request, res: Response) => productsController.getById(req, res)
 )
 
