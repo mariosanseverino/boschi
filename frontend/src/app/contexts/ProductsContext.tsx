@@ -12,32 +12,32 @@ import { Product } from '../interfaces/products/Products'
 
 export type ProductsPropsType = {
 	isLoading: boolean,
-    allProducts: Product[],
-    setAllProducts: Dispatch<SetStateAction<Product[]>>
-    getProduct: (id: number) => Promise<Product>
+	products: Product[],
+	setProducts: Dispatch<SetStateAction<Product[]>>
+	getProduct: (id: number) => Promise<Product>
 }
 
 export const ProductsContext = createContext<ProductsPropsType>({
 	isLoading: true,
-	allProducts: [],
-	setAllProducts: () => {},
+	products: [],
+	setProducts: () => { },
 	getProduct: async (id: number) => {
-		const response = await fetch(`${ process.env.NEXT_PUBLIC_API_URL }/products/${id}`)
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`)
 		const product = await response.json()
 		return product as Product
 	}
 })
 
 interface ProductsProviderProps {
-    children: React.ReactNode
+	children: React.ReactNode
 }
 
 export default function ProductsProvider({ children }: ProductsProviderProps) {
-	const [allProducts, setAllProducts] = useState<Product[]>([])
+	const [products, setProducts] = useState<Product[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 
 	async function getProduct(id: number) {
-		const response = await fetch(`${ process.env.NEXT_PUBLIC_API_URL }/products/${ id }`)
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`)
 		const product = await response.json()
 		return product as Product
 	}
@@ -45,21 +45,21 @@ export default function ProductsProvider({ children }: ProductsProviderProps) {
 
 	useEffect(() => {
 		requestData('/products').then(data => {
-			setAllProducts(data)
+			setProducts(data)
 			setIsLoading(false)
 		})
 	}, [])
 
 	const productsValue = {
 		isLoading,
-		allProducts,
-		setAllProducts,
+		products,
+		setProducts,
 		getProduct
 	}
 
 	return (
-		<ProductsContext.Provider value={ productsValue }>
-			{ children }
+		<ProductsContext.Provider value={productsValue}>
+			{children}
 		</ProductsContext.Provider>
 	)
 }

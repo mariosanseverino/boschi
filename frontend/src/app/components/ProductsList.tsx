@@ -1,5 +1,6 @@
 import React from 'react'
 import { Product } from '../interfaces/products/Products'
+import ProductCard from './ProductCard'
 
 interface ProductsListProps {
     products: Product[]
@@ -8,7 +9,12 @@ interface ProductsListProps {
 export default function ProductsList({ products }: ProductsListProps) {
 	return (
 		<>
-			{ products.map((product, index) => (<p key={ index }>{ product.name }</p>))}
+			{ products.map((product, index) => (
+				<ProductCard
+					key={ index}
+					product={ product }
+				/>
+			))}
 		</>
 	)
 }
