@@ -6,15 +6,19 @@ import React, {
 	Dispatch,
 	SetStateAction,
 	useEffect
-} from 'react';import { Product } from '../interfaces/products/Products'
+} from 'react'
+import { requestData } from '../requests'
+import { Product } from '../interfaces/products/Products'
 
 export type ProductsPropsType = {
+	isLoading: boolean,
     allProducts: Product[],
     setAllProducts: Dispatch<SetStateAction<Product[]>>
     getProduct: (id: number) => Promise<Product>
 }
 
 export const ProductsContext = createContext<ProductsPropsType>({
+	isLoading: true,
 	allProducts: [],
 	setAllProducts: () => {},
 	getProduct: async (id: number) => {
@@ -30,6 +34,7 @@ interface ProductsProviderProps {
 
 export default function ProductsProvider({ children }: ProductsProviderProps) {
 	const [allProducts, setAllProducts] = useState<Product[]>([])
+	const [isLoading, setIsLoading] = useState(true)
 
 	async function getProduct(id: number) {
 		const response = await fetch(`${ process.env.NEXT_PUBLIC_API_URL }/products/${ id }`)
@@ -37,13 +42,16 @@ export default function ProductsProvider({ children }: ProductsProviderProps) {
 		return product as Product
 	}
 
+
 	useEffect(() => {
-		fetch(`${ process.env.NEXT_PUBLIC_API_URL }/products`)
-			.then((response) => response.json())
-			.then((data) => { setAllProducts(data) })
+		requestData('/products').then(data => {
+			setAllProducts(data)
+			setIsLoading(false)
+		})
 	}, [])
 
 	const productsValue = {
+		isLoading,
 		allProducts,
 		setAllProducts,
 		getProduct

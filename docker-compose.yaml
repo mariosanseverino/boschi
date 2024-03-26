@@ -15,6 +15,12 @@ services:
       dockerfile: Dockerfile
     ports:
       - 5433:5433
+    command: >
+      sh -c '
+      while ! nc -z db 5432; do sleep 1; done;
+      npm run setup;
+      npm start
+      '
     depends_on:
       - db
   frontend:
@@ -25,3 +31,5 @@ services:
       - 3000:3000
     depends_on:
       - backend
+    volumes:
+    - ./frontend:/app
