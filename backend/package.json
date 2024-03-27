@@ -10,10 +10,10 @@
     "seed": "node --experimental-modules prisma/seeds/seed.mjs"
   },
   "scripts": {
-    "start": "node ./build/server.js",
+    "start": "node ./build/src/server.js",
     "test": "jest",
     "dev": "ts-node src/server.ts",
-    "setup": "docker-compose down && docker-compose up -d && npx prisma migrate dev --name init && npx prisma db seed",
+    "setup": "npx prisma migrate dev --name init && npx prisma db seed",
     "build": "tsc"
   },
   "devDependencies": {

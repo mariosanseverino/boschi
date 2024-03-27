@@ -6,10 +6,12 @@ COPY package*.json ./
 
 RUN npm install
 
-RUN npm run build
-
 COPY . .
 
-EXPOSE 5432
+RUN npm ci
 
-CMD ["node", "app.js"]
+RUN npm run build
+
+EXPOSE 5433
+
+CMD [ "node", "build/src/server.js" ]
