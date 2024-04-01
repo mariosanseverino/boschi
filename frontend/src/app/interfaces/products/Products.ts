@@ -23,3 +23,13 @@ export interface ProductUpdateRequest {
         variants?: Product['variants']
     }
 }
+
+export interface OrderProduct {
+    orderId?: number,
+    productId: Product['id']
+    name: Product['name'],
+    color: ProductVariant['color'],
+    size: ProductVariant['size'],
+    quantity: number,
+    price: ProductVariant['price'],
+}

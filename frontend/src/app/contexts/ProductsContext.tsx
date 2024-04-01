@@ -42,7 +42,6 @@ export default function ProductsProvider({ children }: ProductsProviderProps) {
 		return product as Product
 	}
 
-
 	useEffect(() => {
 		requestData('/products').then(data => {
 			setProducts(data)

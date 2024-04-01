@@ -8,7 +8,6 @@ export default function Home() {
 		<main>
 			<h1>
 				Boschi
-
 			</h1>
 			<Link
 				href='/login'

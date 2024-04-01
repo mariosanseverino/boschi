@@ -17,7 +17,6 @@ export default function Shop() {
 						products={products}
 					/>
 				}
-				
 			</section>
 			<section>
 				<ShopCart />

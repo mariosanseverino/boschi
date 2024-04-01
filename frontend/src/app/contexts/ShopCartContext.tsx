@@ -3,17 +3,20 @@ import React, {
 	createContext,
 	useContext,
 	useState,
+	useEffect
 } from 'react'
-import { Product } from '../interfaces/products/Products'
+import { OrderProduct } from '../interfaces/products/Products'
 
 export type ShopCartPropsType = {
-    cartProducts: Product[],
-    setCartProducts: (newCart: Product[]) => void
+    cartProducts: OrderProduct[],
+	addToCart: (addedProduct: OrderProduct) => void,
+	removeFromCart: (removedProduct: OrderProduct) => void,
 }
 
 export const ShopCartContext = createContext<ShopCartPropsType>({
 	cartProducts: [],
-	setCartProducts: () => {},
+	addToCart: () => {},
+	removeFromCart: () => {}
 })
 
 interface ShopCartProviderProps {
@@ -21,20 +24,39 @@ interface ShopCartProviderProps {
 }
 
 export default function ShopCartProvider({ children }: ShopCartProviderProps) {
-	const [cartProducts, setCartProducts] = useState<Product[]>(() => {
-		const savedCart = localStorage.getItem('shopCart')
-		return savedCart ? JSON.parse(savedCart) : []
-	})
+	const [cartProducts, setCartProducts] = useState<OrderProduct[]>([])
 
-	function setCartAndSave(newCart: Product[]) {
+	function setCartAndSave(newCart: OrderProduct[]) {
 		setCartProducts(newCart)
-		localStorage.setItem('shopCart', JSON.stringify(newCart))
+		if (typeof window !== 'undefined') {
+			localStorage.setItem('shopCart', JSON.stringify(newCart))
+		}
+	}
+
+	function addToCart(addedProduct: OrderProduct) {
+		const currentCart = [...cartProducts]
+		const newCart = [...currentCart, addedProduct]
+		setCartAndSave(newCart)
+	}
+
+	function removeFromCart(removedProduct: OrderProduct) {
+		const currentCart = [...cartProducts]
+		const newCart = currentCart.filter((product) => product.productId !== removedProduct.productId)
+		setCartProducts(newCart)
 	}
 
 	const shopCartValue = {
 		cartProducts,
-		setCartProducts: setCartAndSave,
+		addToCart,
+		removeFromCart,
 	}
+
+	useEffect(() => {
+		const savedCart = localStorage.getItem('shopCart')
+		if (savedCart) {
+			setCartProducts(JSON.parse(savedCart))
+		}
+	}, [])
 
 	return (
 		<ShopCartContext.Provider value={ shopCartValue }>
