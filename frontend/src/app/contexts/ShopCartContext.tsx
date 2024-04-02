@@ -42,7 +42,7 @@ export default function ShopCartProvider({ children }: ShopCartProviderProps) {
 	function removeFromCart(removedProduct: OrderProduct) {
 		const currentCart = [...cartProducts]
 		const newCart = currentCart.filter((product) => product.productId !== removedProduct.productId)
-		setCartProducts(newCart)
+		setCartAndSave(newCart)
 	}
 
 	const shopCartValue = {

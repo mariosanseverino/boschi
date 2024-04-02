@@ -8,9 +8,9 @@ export default function Shop() {
 	const { products, isLoading } = useProductsContext()
 
 	return (
-		<section>
-			<h1>shop</h1>
+		<div className='flex justify-between'>
 			<section>
+				<h1>Shop</h1>
 				{ isLoading
 					? 'Loading...'
 					: <ProductsList
@@ -21,6 +21,6 @@ export default function Shop() {
 			<section>
 				<ShopCart />
 			</section>
-		</section>
+		</div>
 	)
 }
