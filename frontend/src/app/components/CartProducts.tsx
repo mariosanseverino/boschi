@@ -1,27 +1,28 @@
 import React from 'react'
 import { OrderProduct } from '../interfaces/products/Products'
-import { useShopCartContext } from '../contexts/ShopCartContext'
+import { useShopCartContext } from '../contexts/CartContext'
 
-interface ShopCartProducts {
-    cartProducts: OrderProduct[]
+interface CartProducts {
+	cartProducts: OrderProduct[]
 }
 
-export default function ShopCartProducts ({ cartProducts }: ShopCartProducts) {
-	const { removeFromCart, updateProductQuantity } = useShopCartContext()
+export default function CartProducts() {
+	const { cartProducts, removeFromCart, updateProductQuantity } = useShopCartContext()
 
 	return (
 		<>
 			{
 				cartProducts.map((cartProduct: OrderProduct, index) => (
-					<div key={ index } className='border-red-400 border-2'>
+					<div key={index} className='border-red-400 border-2'>
 						<p>{ cartProduct.name }</p>
 						<p>{ cartProduct.color }</p>
 						<fieldset>
 							<input
 								type='number'
 								name='quantity'
-								defaultValue={ cartProduct.quantity }
-								onBlur={ ({ target: { value } }) => updateProductQuantity(cartProduct, Number(value)) }
+								min={ 1 }
+								value={ cartProduct.quantity }
+								onChange={({ target: { value } }) => updateProductQuantity(cartProduct, Number(value))}
 							/>
 						</fieldset>
 						<button

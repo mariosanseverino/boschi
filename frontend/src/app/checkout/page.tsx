@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
-import ShopCartProducts from '../components/ShopCartProducts'
-import { useShopCartContext } from '../contexts/ShopCartContext'
+import CartProducts from '../components/CartProducts'
+import { useShopCartContext } from '../contexts/CartContext'
 
 enum ShippingOptions {
 	Standard = 'Standard',
@@ -14,15 +14,15 @@ export default function Checkout() {
 	const [shipping, setShipping] = useState(ShippingOptions.Standard)
 
 	function calculateShipping() {
-		switch(shipping) {
-		case ShippingOptions.Standard:
-			return 15.0
-		case ShippingOptions.Express:
-			return 30.0
-		case ShippingOptions.NextDay:
-			return 55.0
-		default:
-			return 0
+		switch (shipping) {
+			case ShippingOptions.Standard:
+				return 15.0
+			case ShippingOptions.Express:
+				return 30.0
+			case ShippingOptions.NextDay:
+				return 55.0
+			default:
+				return 0
 		}
 	}
 
@@ -31,24 +31,24 @@ export default function Checkout() {
 	return (
 		<>
 			<h1>Checkout</h1>
-			<ShopCartProducts
-				cartProducts={ cartProducts }
+			<CartProducts
+				cartProducts={cartProducts}
 			/>
 			<fieldset>
 				<label htmlFor='shipping'>Shipping</label>
 				<select
 					name='shipping'
 					defaultValue='Standard'
-					onChange={ ({ target: { value }}) => setShipping(value as ShippingOptions) }
+					onChange={({ target: { value } }) => setShipping(value as ShippingOptions)}
 				>
-					<option value={ ShippingOptions.Standard }>Standard</option>
-					<option value={ ShippingOptions.Express }>Express</option>
-					<option value={ ShippingOptions.NextDay }>Next day</option>
+					<option value={ShippingOptions.Standard}>Standard</option>
+					<option value={ShippingOptions.Express}>Express</option>
+					<option value={ShippingOptions.NextDay}>Next day</option>
 				</select>
 			</fieldset>
-			<p>Subtotal { `R$ ${ subtotal }` }</p>
-			<p>Shipping { `R$ ${ calculateShipping() }` }</p>
-			<p>Total { `R$ ${ calculateShipping() + subtotal }` }</p>
+			<p>Subtotal {`R$ ${subtotal}`}</p>
+			<p>Shipping {`R$ ${calculateShipping()}`}</p>
+			<p>Total {`R$ ${calculateShipping() + subtotal}`}</p>
 		</>
 	)
 }

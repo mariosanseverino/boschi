@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import ProductsList from '../components/ProductsList'
-import ShopCart from '../components/ShopCart'
+import Cart from '../components/Cart'
 import { useProductsContext } from '../contexts/ProductsContext'
 
 export default function Shop() {
@@ -11,7 +11,7 @@ export default function Shop() {
 		<div className='flex justify-between'>
 			<section>
 				<h1>Shop</h1>
-				{ isLoading
+				{isLoading
 					? 'Loading...'
 					: <ProductsList
 						products={products}
@@ -19,7 +19,7 @@ export default function Shop() {
 				}
 			</section>
 			<section>
-				<ShopCart />
+				<Cart />
 			</section>
 		</div>
 	)
