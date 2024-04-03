@@ -12,12 +12,16 @@ export default function Home() {
 			<Link
 				href='/login'
 			>
-					login
+				<button>
+					Login
+				</button>
 			</Link>
 			<Link
 				href='/shop'
 			>
-					shop
+				<button>
+					Shop
+				</button>
 			</Link>
 		</main>
 	)

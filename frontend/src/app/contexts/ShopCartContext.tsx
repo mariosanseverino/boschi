@@ -11,12 +11,14 @@ export type ShopCartPropsType = {
     cartProducts: OrderProduct[],
 	addToCart: (addedProduct: OrderProduct) => void,
 	removeFromCart: (removedProduct: OrderProduct) => void,
+	updateProductQuantity: (productToUpdate: OrderProduct, quantity: OrderProduct['quantity']) => void
 }
 
 export const ShopCartContext = createContext<ShopCartPropsType>({
 	cartProducts: [],
 	addToCart: () => {},
-	removeFromCart: () => {}
+	removeFromCart: () => {},
+	updateProductQuantity: () => {}
 })
 
 interface ShopCartProviderProps {
@@ -45,10 +47,26 @@ export default function ShopCartProvider({ children }: ShopCartProviderProps) {
 		setCartAndSave(newCart)
 	}
 
+	function updateProductQuantity(updateProduct: OrderProduct, quantity: OrderProduct['quantity']) {
+		const currentCart = [...cartProducts]
+		const productToUpdate = currentCart.find((product) => {
+			product.productId === updateProduct.productId
+			&& product.color === updateProduct.color
+			&& product.size === updateProduct.size
+		})
+
+		if (productToUpdate) {
+			productToUpdate.quantity = quantity
+			setCartAndSave(currentCart)
+		}
+
+	}
+
 	const shopCartValue = {
 		cartProducts,
 		addToCart,
 		removeFromCart,
+		updateProductQuantity
 	}
 
 	useEffect(() => {
