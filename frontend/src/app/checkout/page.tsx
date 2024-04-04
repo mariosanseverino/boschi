@@ -2,27 +2,22 @@
 import React, { useState } from 'react'
 import CartProducts from '../components/CartProducts'
 import { useShopCartContext } from '../contexts/CartContext'
-
-enum ShippingOptions {
-	Standard = 'Standard',
-	Express = 'Express',
-	NextDay = 'Next day'
-}
+import { ShipmentType } from '../interfaces/orders/Order'
 
 export default function Checkout() {
-	const { cartProducts } = useShopCartContext()
-	const [shipping, setShipping] = useState(ShippingOptions.Standard)
+	const { cartProducts, placeOrder } = useShopCartContext()
+	const [shipping, setShipping] = useState<ShipmentType>('Standard')
 
 	function calculateShipping() {
 		switch (shipping) {
-			case ShippingOptions.Standard:
-				return 15.0
-			case ShippingOptions.Express:
-				return 30.0
-			case ShippingOptions.NextDay:
-				return 55.0
-			default:
-				return 0
+		case 'Standard':
+			return 15.0
+		case 'Express':
+			return 30.0
+		case 'NextDay':
+			return 55.0
+		default:
+			return 0
 		}
 	}
 
@@ -31,24 +26,37 @@ export default function Checkout() {
 	return (
 		<>
 			<h1>Checkout</h1>
-			<CartProducts
-				cartProducts={cartProducts}
-			/>
+			<CartProducts />
 			<fieldset>
 				<label htmlFor='shipping'>Shipping</label>
 				<select
 					name='shipping'
 					defaultValue='Standard'
-					onChange={({ target: { value } }) => setShipping(value as ShippingOptions)}
+					onChange={({ target: { value } }) => setShipping(value as ShipmentType)}
 				>
-					<option value={ShippingOptions.Standard}>Standard</option>
-					<option value={ShippingOptions.Express}>Express</option>
-					<option value={ShippingOptions.NextDay}>Next day</option>
+					<option value={ 'Standard' }>Standard</option>
+					<option value={ 'Express' }>Express</option>
+					<option value={ 'NextDay' }>Next day</option>
 				</select>
 			</fieldset>
 			<p>Subtotal {`R$ ${subtotal}`}</p>
 			<p>Shipping {`R$ ${calculateShipping()}`}</p>
 			<p>Total {`R$ ${calculateShipping() + subtotal}`}</p>
+			<button
+				className='bg-gray-600 text-white'
+				onClick={ () => placeOrder({
+					discount: 0,
+					shipping: calculateShipping(),
+					subtotal,
+					total: calculateShipping() + subtotal,
+					userId: 1,
+					address: 'Av. Padre Leopoldo Brentano, 110 - Porto Alegre/RS',
+					shipmentType: shipping,
+					productsList: cartProducts
+				}) }
+			>
+				Finish
+			</button>
 		</>
 	)
 }

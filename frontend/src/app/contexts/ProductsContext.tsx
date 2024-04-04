@@ -8,7 +8,7 @@ import React, {
 	useEffect
 } from 'react'
 import { requestData } from '../requests'
-import { Product } from '../interfaces/products/Products'
+import { Product } from '../interfaces/products/Product'
 
 export type ProductsPropsType = {
 	isLoading: boolean,
@@ -22,7 +22,7 @@ export const ProductsContext = createContext<ProductsPropsType>({
 	products: [],
 	setProducts: () => { },
 	getProduct: async (id: number) => {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`)
+		const response = await fetch( `${process.env.NEXT_PUBLIC_API_URL}/products/${id}` )
 		const product = await response.json()
 		return product as Product
 	}

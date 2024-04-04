@@ -14,6 +14,7 @@ async function main() {
 			addressLocation: 'Av. Padre Leopoldo Brentano, 110 - Porto Alegre/RS',
 			OrderProduct: [{
 				price: 150,
+				name: 'Basic T-Shirt',
 				color: 'White',
 				size: 'S',
 				quantity: 2,

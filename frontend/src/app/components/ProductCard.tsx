@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Product, ProductVariant } from '../interfaces/products/Products'
+import { Product, ProductVariant } from '../interfaces/products/Product'
 import { useShopCartContext } from '../contexts/CartContext'
 
 interface ProductCardProps {

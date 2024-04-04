@@ -5,20 +5,22 @@ import React, {
 	useState,
 	useEffect
 } from 'react'
-import { OrderProduct } from '../interfaces/products/Products'
+import { OrderProduct, OrderRequest } from '../interfaces/orders/Order'
 
 export type CartContextPropsType = {
 	cartProducts: OrderProduct[],
 	addToCart: (addedProduct: OrderProduct) => void,
 	removeFromCart: (removedProduct: OrderProduct) => void,
-	updateProductQuantity: (productToUpdate: OrderProduct, quantity: OrderProduct['quantity']) => void
+	updateProductQuantity: (productToUpdate: OrderProduct, quantity: OrderProduct['quantity']) => void,
+	placeOrder: (order: OrderRequest) => void
 }
 
 export const CartContext = createContext<CartContextPropsType>({
 	cartProducts: [],
-	addToCart: () => { },
-	removeFromCart: () => { },
-	updateProductQuantity: () => { }
+	addToCart: () => {},
+	removeFromCart: () => {},
+	updateProductQuantity: () => {},
+	placeOrder: () => {}
 })
 
 interface CartProviderProps {
@@ -71,11 +73,39 @@ export default function CartProvider({ children }: CartProviderProps) {
 		}
 	}
 
+	async function placeOrder(order: OrderRequest) {
+		const token = localStorage.getItem('authToken')
+
+		if (token) {
+			await fetch(`${ process.env.NEXT_PUBLIC_API_URL }/orders`, {
+				method: 'POST',
+				headers: {
+					'Authorization': `Bearer ${ token }`,
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(order)
+			})
+				.then((response) => {
+					if (!response.ok) {
+						throw new Error('ERROR! Failed to place order.')
+					}
+					return response.json()
+				})
+				.then(() => {
+					setCartProducts([])
+				})
+				.catch((error) => {
+					console.log('Error: ', error)
+				})
+		}
+	}
+
 	const shopCartValue = {
 		cartProducts,
 		addToCart,
 		removeFromCart,
-		updateProductQuantity
+		updateProductQuantity,
+		placeOrder
 	}
 
 	useEffect(() => {

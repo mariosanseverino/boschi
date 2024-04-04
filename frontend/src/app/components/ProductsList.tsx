@@ -1,5 +1,5 @@
 import React from 'react'
-import { Product, ProductVariant } from '../interfaces/products/Products'
+import { Product, ProductVariant } from '../interfaces/products/Product'
 import ProductCard from './ProductCard'
 
 interface ProductsListProps {

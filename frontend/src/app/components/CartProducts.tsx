@@ -1,5 +1,5 @@
 import React from 'react'
-import { OrderProduct } from '../interfaces/products/Products'
+import { OrderProduct } from '../interfaces/orders/Order'
 import { useShopCartContext } from '../contexts/CartContext'
 
 interface CartProducts {
@@ -12,8 +12,8 @@ export default function CartProducts() {
 	return (
 		<>
 			{
-				cartProducts.map((cartProduct: OrderProduct, index) => (
-					<div key={index} className='border-red-400 border-2'>
+				cartProducts.map((cartProduct: OrderProduct, index: number) => (
+					<div key={ index } className='border-red-400 border-2'>
 						<p>{ cartProduct.name }</p>
 						<p>{ cartProduct.color }</p>
 						<fieldset>
@@ -22,14 +22,14 @@ export default function CartProducts() {
 								name='quantity'
 								min={ 1 }
 								value={ cartProduct.quantity }
-								onChange={({ target: { value } }) => updateProductQuantity(cartProduct, Number(value))}
+								onChange={ ({ target: { value } }) => updateProductQuantity(cartProduct, Number(value)) }
 							/>
 						</fieldset>
 						<button
 							className='bg-gray-600 text-white'
 							onClick={ () => removeFromCart(cartProduct) }
 						>
-							remove
+							Remove
 						</button>
 					</div>
 				))

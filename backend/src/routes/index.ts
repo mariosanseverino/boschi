@@ -9,6 +9,6 @@ const router = Router()
 router.use('/login', loginRouter)
 router.use('/register', registerRouter)
 router.use('/products', productsRouter)
-router.use('/order', ordersRouter)
+router.use('/orders', ordersRouter)
 
 export default router

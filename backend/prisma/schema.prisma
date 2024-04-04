@@ -79,6 +79,7 @@ model Order {
 model OrderProduct {
   order          Order          @relation(fields: [orderId], references: [id])
   productVariant ProductVariant @relation(fields: [color, size, productId], references: [color, size, productId])
+  name           String
   price          Float
   color          String
   size           String
