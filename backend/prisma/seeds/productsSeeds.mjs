@@ -26,7 +26,25 @@ async function main() {
 						color: 'White',
 						size: 'L',
 						quantity: 10
-					}
+					},
+					{
+						price: 150,
+						color: 'Black',
+						size: 'S',
+						quantity: 10
+					},
+					{
+						price: 150,
+						color: 'Black',
+						size: 'M',
+						quantity: 10
+					},
+					{
+						price: 150,
+						color: 'Black',
+						size: 'L',
+						quantity: 10
+					},
 				]
 			}
 		}

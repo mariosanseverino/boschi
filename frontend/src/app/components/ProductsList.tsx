@@ -1,5 +1,5 @@
 import React from 'react'
-import { Product } from '../interfaces/products/Products'
+import { Product, ProductVariant } from '../interfaces/products/Product'
 import ProductCard from './ProductCard'
 
 interface ProductsListProps {
@@ -9,12 +9,21 @@ interface ProductsListProps {
 export default function ProductsList({ products }: ProductsListProps) {
 	return (
 		<>
-			{ products.map((product, index) => (
-				<ProductCard
-					key={ index}
-					product={ product }
-				/>
-			))}
+			{ products.map((product, index) => {
+				const uniqueColors: ProductVariant['color'][] = []
+				product.variants.map((variant) => {
+					if (!uniqueColors.includes(variant.color)) {
+						uniqueColors.push(variant.color)
+					}
+				})
+				return uniqueColors.map((color, colorIndex) => (
+					<ProductCard
+						key={ `${ index }-${ colorIndex }`}
+						product={ product }
+						color={ color }
+					/>
+				))
+			})}
 		</>
 	)
 }

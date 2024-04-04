@@ -24,7 +24,7 @@ export default class OrdersModel {
 				shipmentType,
 				orderStatus: 'Pending',
 				OrderProduct: {
-					create: await Promise.all(productsList.map(async ({ productId, price, quantity, color, size }) => {
+					create: await Promise.all(productsList.map(async ({ productId, name, price, quantity, color, size }) => {
 						const productVariant = await this.ordersModel.productVariant.findUnique({
 							where: {
 								color_size_productId: {
@@ -47,6 +47,7 @@ export default class OrdersModel {
 									}
 								}
 							},
+							name,
 							price,
 							quantity
 						}

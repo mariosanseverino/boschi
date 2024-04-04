@@ -19,6 +19,24 @@
       "color": "White",
       "size": "L",
       "quantity": 10
+    },
+    {
+      "price": 180,
+      "color": "Black",
+      "size": "S",
+      "quantity": 10
+    },
+    {
+      "price": 180,
+      "color": "Black",
+      "size": "M",
+      "quantity": 10
+    },
+    {
+      "price": 180,
+      "color": "Black",
+      "size": "L",
+      "quantity": 10
     }
   ]
 }
