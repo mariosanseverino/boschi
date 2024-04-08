@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { PrismaClient } from '@prisma/client'
 import { NewUser } from '../interfaces/users/User'
 import { UserRegisterRequest } from '../interfaces/users/User'
@@ -6,7 +5,7 @@ import { UserRegisterRequest } from '../interfaces/users/User'
 export default class RegisterModel {
 	private registerModel = new PrismaClient()
 
-	async register({ email, password: reqPassword, name, address, birthday }: UserRegisterRequest): Promise<NewUser> {
+	async register({ email, password: reqPassword, name, cep, address, birthday }: UserRegisterRequest): Promise<NewUser> {
 		await this.verifyEmail(email)
 		const existingAddress = await this.verifyAddress(address)
 
@@ -18,7 +17,7 @@ export default class RegisterModel {
 					name,
 					address: existingAddress
 						? { connect: { id: existingAddress.id } }
-						: { create: { location: address } },
+						: { create: { location: address, cep } },
 					birthday
 				},
 				include: { address: true }
@@ -27,8 +26,8 @@ export default class RegisterModel {
 
 		return {
 			id: newUser.id,
-			name: newUser.name,
 			email: newUser.email,
+			name: newUser.name,
 			address: newUser.address,
 			birthday: newUser.birthday
 		}

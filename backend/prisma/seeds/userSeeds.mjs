@@ -17,7 +17,10 @@ async function main() {
 			name: 'Mario Sanseverino',
 			address: {
 				create: [
-					{ location: 'Av. Padre Leopoldo Brentano, 110 - Porto Alegre/RS' }
+					{
+						location: 'Av. Padre Leopoldo Brentano, 110 - Porto Alegre/RS',
+						cep: '90250-590'
+					}
 				]},
 			birthday: '25051993',
 		}
@@ -28,7 +31,10 @@ async function main() {
 			password: hashedTestPassword,
 			name: 'Test',
 			address: { create: [
-				{ location: 'Test' }
+				{
+					location: 'Test',
+					cep: '90000-000'
+				}
 			]},
 			birthday: '08032024',
 		}

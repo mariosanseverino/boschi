@@ -7,7 +7,7 @@ import React, {
 } from 'react'
 import { OrderProduct, OrderRequest } from '../interfaces/orders/Order'
 
-export type CartContextPropsType = {
+export type CartContextProps = {
 	cartProducts: OrderProduct[],
 	addToCart: (addedProduct: OrderProduct) => void,
 	removeFromCart: (removedProduct: OrderProduct) => void,
@@ -15,7 +15,7 @@ export type CartContextPropsType = {
 	placeOrder: (order: OrderRequest) => void
 }
 
-export const CartContext = createContext<CartContextPropsType>({
+export const CartContext = createContext<CartContextProps>({
 	cartProducts: [],
 	addToCart: () => {},
 	removeFromCart: () => {},

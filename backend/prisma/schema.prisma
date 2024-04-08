@@ -21,6 +21,7 @@ model User {
 model UserAddress {
   id       Int     @id @default(autoincrement())
   location String  @unique
+  cep      String
   userId   Int
   User     User    @relation(fields: [userId], references: [id])
   Order    Order[]

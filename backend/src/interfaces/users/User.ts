@@ -8,6 +8,7 @@ export interface LoginRequest {
 export interface UserAddress {
     id: number,
     location: string,
+    cep: string,
     userId: User['id']
 }
 
@@ -25,6 +26,7 @@ export interface UserRegisterRequest {
     email: User['email'],
     password: User['password'],
     name: User['name'],
+    cep: UserAddress['cep'],
     address: UserAddress['location'],
     birthday: User['birthday'],
 }
