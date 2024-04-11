@@ -1,37 +1,67 @@
 'use client'
 import React, { useState } from 'react'
-import { UserRegisterRequest } from '../interfaces/users/User'
+import { User, UserRegisterRequest } from '../interfaces/users/User'
 
-type RegisterFormProps = {
-	submitRegister: (userReq: UserRegisterRequest) => void
-}
-
-export default function RegisterForm({ submitRegister }: RegisterFormProps) {
+export default function RegisterForm() {
 	const [firstName, setFirstName] = useState('')
 	const [lastName, setLastName] = useState('')
-	const [userReq, setUserReq] = useState<UserRegisterRequest>({
+	const emptyUserRequest = {
 		email: '',
 		password: '',
 		name: '',
-		cep: '',
-		address: '',
+		address: {
+			street: '',
+			number: 0,
+			complement: '',
+			postalCode: '',
+			city: '',
+			state: '',
+			country: ''
+		},
 		birthday: ''
-	})
+	}
 
-	function handleChange(value: string, inputName: string) {
-		setUserReq((prevState) => ({
-			...prevState,
-			[inputName]: value
-		}))
+	const [userReq, setUserReq] = useState<UserRegisterRequest>(emptyUserRequest)
+
+	function handleChange(value: string | number, inputName: string) {
+		const addressProperties = Object.keys(emptyUserRequest.address)
+
+		if (addressProperties.includes(inputName)) {
+			setUserReq((prevState) => ({
+				...prevState,
+				address: {
+					...prevState.address,
+					[inputName]: value
+				}
+			}))
+		} else {
+			setUserReq((prevState) => ({
+				...prevState,
+				[inputName]: value
+			}))
+		}
+	}
+
+	async function registerUser(userReq: UserRegisterRequest): Promise<User> {
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/register`, {
+			method: 'POST',
+			body: JSON.stringify(userReq)
+		})
+		const newUser = await response.json()
+		return newUser as User
 	}
 
 	function submitForm() {
-		setUserReq((prevState) => ({
-			...prevState,
-			name: `${ firstName } + ${ lastName }`
-		}))
-
-		submitRegister(userReq)
+		setUserReq((prevState) => {
+			const updatedUserReq = {
+				...prevState,
+				name: `${ firstName } + ${ lastName }`
+			};
+	
+			registerUser(updatedUserReq);
+	
+			return updatedUserReq;
+		});
 	}
 
 	return (
@@ -46,7 +76,7 @@ export default function RegisterForm({ submitRegister }: RegisterFormProps) {
 			</fieldset>
 			<fieldset>
 				<label htmlFor='user-email'>Email</label>
-				<input required type='email' name='user-email' />
+				<input required onChange={ ({ target: { value, name } }) => handleChange(value, name) } type='email' name='user-email' />
 			</fieldset>
 			<fieldset>
 				<label htmlFor='email'>Confirm Email</label>
@@ -61,8 +91,8 @@ export default function RegisterForm({ submitRegister }: RegisterFormProps) {
 				<input required onChange={ ({ target: { value, name } }) => handleChange(value, name) } type='password' name='password' />
 			</fieldset>
 			<fieldset>
-				<label htmlFor='cep'>CEP Code</label>
-				<input required onChange={ ({ target: { value, name }}) => handleChange(value, name) } type='text' name='cep' placeholder='99999-999' />
+				<label htmlFor='postalCode'>Postal Code</label>
+				<input required onChange={ ({ target: { value, name }}) => handleChange(value, name) } type='text' name='postalCode' placeholder='99999-999' />
 			</fieldset>
 			<fieldset>
 				<label htmlFor='address'>Birthday</label>
