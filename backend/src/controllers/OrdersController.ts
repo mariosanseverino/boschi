@@ -8,8 +8,8 @@ export default class OrdersController {
 	) { }
 
 	async create(req: Request, res: Response): Promise<Response> {
-		const { discount, shipping, subtotal, total, userId, address, shipmentType, productsList } = req.body
-		const serviceResponse = await this.ordersService.create({ discount, shipping, subtotal, total, userId, address, shipmentType, productsList })
+		const { discount, shipping, subtotal, total, userId, addressId, shipmentType, productsList } = req.body
+		const serviceResponse = await this.ordersService.create({ discount, shipping, subtotal, total, userId, addressId, shipmentType, productsList })
 		const { status, data } = serviceResponse
 		return res.status(ServiceCodes[status]).json(data)
 	}

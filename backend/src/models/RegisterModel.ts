@@ -1,11 +1,11 @@
 import { PrismaClient } from '@prisma/client'
-import { NewUser } from '../interfaces/users/User'
+import { NewUser, UserAddress, UserAddressRequest } from '../interfaces/users/User'
 import { UserRegisterRequest } from '../interfaces/users/User'
 
 export default class RegisterModel {
 	private registerModel = new PrismaClient()
 
-	async register({ email, password: reqPassword, name, cep, address, birthday }: UserRegisterRequest): Promise<NewUser> {
+	async register({ email, password: reqPassword, name, address, birthday }: UserRegisterRequest): Promise<NewUser> {
 		await this.verifyEmail(email)
 		const existingAddress = await this.verifyAddress(address)
 
@@ -17,7 +17,15 @@ export default class RegisterModel {
 					name,
 					address: existingAddress
 						? { connect: { id: existingAddress.id } }
-						: { create: { location: address, cep } },
+						: { create: {
+							postalCode: address.postalCode,
+							street: address.street,
+							number: address.number,
+							complement: address.complement,
+							city: address.city,
+							state: address.state,
+							country: address.country,
+						} },
 					birthday
 				},
 				include: { address: true }
@@ -33,8 +41,16 @@ export default class RegisterModel {
 		}
 	}
 
-	async verifyAddress(address: string) {
-		return await this.registerModel.userAddress.findFirst({ where: { location: address } })
+	async verifyAddress({ postalCode, street, number, complement, city, state, country }: UserAddressRequest) {
+		return await this.registerModel.userAddress.findFirst({ where: {
+			postalCode,
+			street,
+			number,
+			complement,
+			city,
+			state,
+			country
+		} })
 	}
 
 	async verifyEmail(email: string) {

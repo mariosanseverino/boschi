@@ -4,7 +4,7 @@ import { OrderRequest, OrderStatus } from '../interfaces/orders/Order'
 
 export default class OrderValidation {
 	static validateOrder(req: Request, res: Response, next: NextFunction) {
-		const { discount, shipping, subtotal, total, userId, address, shipmentType, productsList }: OrderRequest = req.body
+		const { discount, shipping, subtotal, total, userId, addressId, shipmentType, productsList }: OrderRequest = req.body
 
 		const productsTotal = productsList.reduce((acc, product) => (acc + (product.price * product.quantity)), 0)
 
@@ -21,7 +21,7 @@ export default class OrderValidation {
 			|| subtotal === undefined
 			|| total === undefined
 			|| userId === undefined
-			|| address === undefined
+			|| addressId === undefined
 			|| shipmentType === undefined
 			|| productsList === undefined) {
 			return res.status(ServiceCodes.INVALID_DATA).json({ message: 'Order is missing mandatory information.' })

@@ -11,7 +11,7 @@ async function main() {
 			subtotal: 300,
 			total: 330,
 			userId: 1,
-			addressLocation: 'Av. Padre Leopoldo Brentano, 110 - Porto Alegre/RS',
+			addressId: 1,
 			OrderProduct: [{
 				price: 150,
 				name: 'Basic T-Shirt',

@@ -12,7 +12,7 @@ export interface Order {
     subtotal: number,
     total: number,
     userId: User['id'],
-    address: UserAddress['location'],
+    addressId: UserAddress['id'],
     shipmentType: ShipmentType,
     orderStatus: OrderStatus,
     productsList: OrderProduct[],

@@ -9,11 +9,11 @@ export default class RegisterService {
 		private registerModel = new RegisterModel()
 	) { }
 
-	async register({ email, password, name, cep, address, birthday }: UserRegisterRequest): Promise<ServiceResponse<NewUser>> {
+	async register({ email, password, name, address, birthday }: UserRegisterRequest): Promise<ServiceResponse<NewUser>> {
 		try {
 			const hashedPassword = await BCrypt.hash(password, 10)
 			const userData = await this.registerModel.register(
-				{ email, password: hashedPassword, name, cep, address, birthday }
+				{ email, password: hashedPassword, name, address, birthday }
 			)
 			return { status: 'SUCCESSFUL', data: userData }
 		} catch (error) {

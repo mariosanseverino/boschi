@@ -18,8 +18,13 @@ async function main() {
 			address: {
 				create: [
 					{
-						location: 'Av. Padre Leopoldo Brentano, 110 - Porto Alegre/RS',
-						cep: '90250-590'
+						postalCode: '90250-590',
+						street: 'Av. Padre Leopoldo Brentano',
+						complement: '',
+						number: 110,
+						city: 'Porto Alegre',
+						state: 'RS',
+						country: 'Brazil',
 					}
 				]},
 			birthday: '25051993',
@@ -32,8 +37,13 @@ async function main() {
 			name: 'Test',
 			address: { create: [
 				{
-					location: 'Test',
-					cep: '90000-000'
+					postalCode: '99999-999',
+					street: 'Av. Teste',
+					complement: '',
+					number: 666,
+					city: 'Porto Alegre',
+					state: 'RS',
+					country: 'Brazil',
 				}
 			]},
 			birthday: '08032024',

@@ -19,12 +19,17 @@ model User {
 }
 
 model UserAddress {
-  id       Int     @id @default(autoincrement())
-  location String  @unique
-  cep      String
-  userId   Int
-  User     User    @relation(fields: [userId], references: [id])
-  Order    Order[]
+  id                 Int     @id @default(autoincrement())
+  postalCode         String
+  street             String
+  number             Int
+  complement         String
+  city               String
+  state              String
+  country            String
+  userId             Int
+  User               User    @relation(fields: [userId], references: [id])
+  Order              Order[]
 }
 
 model Product {
@@ -69,8 +74,8 @@ model Order {
   total           Float
   user            User           @relation(fields: [userId], references: [id])
   userId          Int
-  address         UserAddress    @relation(fields: [addressLocation], references: [location])
-  addressLocation String
+  address         UserAddress    @relation(fields: [addressId], references: [id])
+  addressId       Int
   OrderProduct    OrderProduct[]
   shipmentType    ShipmentType
   orderStatus     OrderStatus
