@@ -50,7 +50,7 @@ export default function Checkout() {
 					subtotal,
 					total: calculateShipping() + subtotal,
 					userId: 1,
-					address: 'Av. Padre Leopoldo Brentano, 110 - Porto Alegre/RS',
+					addressId: 1,
 					shipmentType: shipping,
 					productsList: cartProducts
 				}) }

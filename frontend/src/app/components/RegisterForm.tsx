@@ -21,7 +21,8 @@ export default function RegisterForm() {
 		birthday: ''
 	}
 
-	const [userReq, setUserReq] = useState<UserRegisterRequest>(emptyUserRequest)
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [_userReq, setUserReq] = useState<UserRegisterRequest>(emptyUserRequest)
 
 	function handleChange(value: string | number, inputName: string) {
 		const addressProperties = Object.keys(emptyUserRequest.address)
@@ -56,12 +57,12 @@ export default function RegisterForm() {
 			const updatedUserReq = {
 				...prevState,
 				name: `${ firstName } + ${ lastName }`
-			};
+			}
 	
-			registerUser(updatedUserReq);
+			registerUser(updatedUserReq)
 	
-			return updatedUserReq;
-		});
+			return updatedUserReq
+		})
 	}
 
 	return (
