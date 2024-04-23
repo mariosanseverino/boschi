@@ -5,14 +5,14 @@ import React, {
 	useState,
 	useEffect
 } from 'react'
-import { OrderProduct, OrderRequest } from '../interfaces/orders/Order'
+import { Order, OrderProduct, OrderRequest } from '../interfaces/orders/Order'
 
 export type CartContextProps = {
 	cartProducts: OrderProduct[],
 	addToCart: (addedProduct: OrderProduct) => void,
 	removeFromCart: (removedProduct: OrderProduct) => void,
 	updateProductQuantity: (productToUpdate: OrderProduct, quantity: OrderProduct['quantity']) => void,
-	placeOrder: (order: OrderRequest) => void
+	placeOrder: (order: OrderRequest) => Promise<Order | undefined>,
 }
 
 export const CartContext = createContext<CartContextProps>({
@@ -20,7 +20,7 @@ export const CartContext = createContext<CartContextProps>({
 	addToCart: () => {},
 	removeFromCart: () => {},
 	updateProductQuantity: () => {},
-	placeOrder: () => {}
+	placeOrder: () => Promise.reject('Method not implemented')
 })
 
 interface CartProviderProps {
@@ -73,11 +73,11 @@ export default function CartProvider({ children }: CartProviderProps) {
 		}
 	}
 
-	async function placeOrder(order: OrderRequest) {
+	async function placeOrder(order: OrderRequest): Promise<Order | undefined> {
 		const token = localStorage.getItem('authToken')
-
+	
 		if (token) {
-			await fetch(`${ process.env.NEXT_PUBLIC_API_URL }/orders`, {
+			const response = await fetch(`${ process.env.NEXT_PUBLIC_API_URL }/orders`, {
 				method: 'POST',
 				headers: {
 					'Authorization': `Bearer ${ token }`,
@@ -85,18 +85,16 @@ export default function CartProvider({ children }: CartProviderProps) {
 				},
 				body: JSON.stringify(order)
 			})
-				.then((response) => {
-					if (!response.ok) {
-						throw new Error('ERROR! Failed to place order.')
-					}
-					return response.json()
-				})
-				.then(() => {
-					setCartProducts([])
-				})
-				.catch((error) => {
-					console.log('Error: ', error)
-				})
+	
+			if (!response.ok) {
+				throw new Error('ERROR! Failed to place order.')
+			}
+	
+			const data: Order = await response.json()
+	
+			setCartProducts([])
+	
+			return data
 		}
 	}
 
@@ -122,6 +120,6 @@ export default function CartProvider({ children }: CartProviderProps) {
 	)
 }
 
-export function useShopCartContext() {
+export function useCartContext() {
 	return useContext(CartContext)
 }
