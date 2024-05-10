@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Product, ProductVariant } from '../interfaces/products/Product'
 import { useCartContext } from '../contexts/CartContext'
+import Link from 'next/link'
 
 interface ProductCardProps {
 	product: Product,
@@ -13,7 +14,9 @@ export default function ProductCard({ product, color }: ProductCardProps) {
 
 	return (
 		<div className='border-red-400 border-2'>
-			<h1>{product.name}</h1>
+			<Link href={ `/${product.id}` }>
+				<h1>{ product.name }</h1>
+			</Link>
 			<h2>{color}</h2>
 			<fieldset>
 				<label htmlFor='product-quantity'>Quantity</label>
@@ -36,7 +39,7 @@ export default function ProductCard({ product, color }: ProductCardProps) {
 				})}
 				className='bg-gray-600 text-white'
 			>
-				Add to cart
+					Add to cart
 			</button>
 		</div>
 	)

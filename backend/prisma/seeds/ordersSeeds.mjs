@@ -6,6 +6,8 @@ async function main() {
 	await prisma.order.create({
 		data: {
 			id: 1,
+			createdAt: new Date(),
+			updatedAt: new Date(),
 			discount: 0,
 			shipping: 30,
 			subtotal: 300,

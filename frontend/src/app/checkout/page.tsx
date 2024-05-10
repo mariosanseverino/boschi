@@ -47,7 +47,10 @@ export default function Checkout() {
 			<button
 				className='bg-gray-600 text-white'
 				onClick={ async () => {
+					const now = new Date
 					const order = await placeOrder({
+						createdAt: now,
+						updatedAt: now,
 						discount: 0,
 						shipping: calculateShipping(),
 						subtotal,
