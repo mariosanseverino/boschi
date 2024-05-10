@@ -7,6 +7,8 @@ export type OrderStatus = 'Pending' | 'Processing' | 'Shipped' | 'Delivered' | '
 
 export interface Order {
     id: number,
+    createdAt: Date,
+    updatedAt: Date,
     discount: number,
     shipping: number,
     subtotal: number,

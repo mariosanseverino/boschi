@@ -10,6 +10,16 @@ export default function ThankYou() {
 	const { findOrder } = useCartContext()
 	const [order, setOrder] = useState<Order>({} as Order)
 
+	function formatDate(createdAt: Date) {
+		const date = new Date(createdAt)
+		const dateFormat = date.toLocaleDateString('en-US', {
+			day: 'numeric', 
+			month: 'long', 
+			year: 'numeric' 
+		})
+		return dateFormat
+	}
+
 	useEffect(() => {
 		async function getOrder(orderId: Order['id']) {
 			const order = await findOrder(orderId)
@@ -38,7 +48,7 @@ export default function ThankYou() {
 				</p>
 				<div>
 					<h2>Order Details:</h2>
-
+					<p>{ `${ formatDate(order.createdAt) }` }</p>
 				</div>
 			</section>
 		</Suspense>
