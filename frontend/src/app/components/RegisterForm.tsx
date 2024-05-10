@@ -22,7 +22,7 @@ export default function RegisterForm() {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [_userReq, setUserReq] = useState<UserRegisterRequest>(emptyUserRequest)
+	const [userReq, setUserReq] = useState<UserRegisterRequest>(emptyUserRequest)
 
 	function handleChange(value: string | number, inputName: string) {
 		const addressProperties = Object.keys(emptyUserRequest.address)
@@ -48,6 +48,8 @@ export default function RegisterForm() {
 			method: 'POST',
 			body: JSON.stringify(userReq)
 		})
+		console.log(userReq)
+		
 		const newUser = await response.json()
 		return newUser as User
 	}

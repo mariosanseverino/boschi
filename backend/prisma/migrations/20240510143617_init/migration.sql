@@ -57,6 +57,8 @@ CREATE TABLE "ProductVariant" (
 -- CreateTable
 CREATE TABLE "Order" (
     "id" SERIAL NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
     "discount" DOUBLE PRECISION NOT NULL,
     "shipping" DOUBLE PRECISION NOT NULL,
     "subtotal" DOUBLE PRECISION NOT NULL,

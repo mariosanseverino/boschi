@@ -5,7 +5,7 @@ import { User, UserAddress } from '../interfaces/users/User'
 export default class OrdersModel {
 	private ordersModel = new PrismaClient()
 
-	async create({ discount, shipping, subtotal, total, userId, addressId, shipmentType, productsList }: OrderRequest): Promise<Order> {
+	async create({ createdAt, discount, shipping, subtotal, total, userId, addressId, shipmentType, productsList }: OrderRequest): Promise<Order> {
 		await this.findProducts(productsList)
 		const user = await this.findUser(userId)
 
@@ -15,6 +15,7 @@ export default class OrdersModel {
 
 		const newOrder = await this.ordersModel.order.create({
 			data: {
+				createdAt,
 				discount,
 				shipping,
 				subtotal,
@@ -64,6 +65,8 @@ export default class OrdersModel {
 
 		return {
 			id: newOrder.id,
+			createdAt,
+			updatedAt: createdAt,
 			discount,
 			shipping,
 			subtotal,

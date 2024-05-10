@@ -68,6 +68,8 @@ enum OrderStatus {
 
 model Order {
   id              Int            @id @unique @default(autoincrement())
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
   discount        Float
   shipping        Float
   subtotal        Float

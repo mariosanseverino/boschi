@@ -7,6 +7,8 @@ export type OrderStatus = 'Pending' | 'Processing' | 'Shipped' | 'Delivered' | '
 
 export interface Order {
     id: number,
+    createdAt: Date,
+    updatedAt: Date,
     discount: number,
     shipping: number,
     subtotal: number,
@@ -18,7 +20,7 @@ export interface Order {
     productsList: OrderProduct[],
 }
 
-export interface OrderRequest extends Omit<Order, 'id' | 'orderStatus'> { }
+export interface OrderRequest extends Omit<Order, 'id' | 'updatedAt' | 'orderStatus'> { }
 
 export interface OrderUpdate {
     orderId: Order['id']

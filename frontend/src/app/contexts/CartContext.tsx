@@ -13,6 +13,7 @@ export type CartContextProps = {
 	removeFromCart: (removedProduct: OrderProduct) => void,
 	updateProductQuantity: (productToUpdate: OrderProduct, quantity: OrderProduct['quantity']) => void,
 	placeOrder: (order: OrderRequest) => Promise<Order | undefined>,
+	findOrder: (orderId: Order['id']) => Promise<Order | undefined>
 }
 
 export const CartContext = createContext<CartContextProps>({
@@ -20,7 +21,8 @@ export const CartContext = createContext<CartContextProps>({
 	addToCart: () => {},
 	removeFromCart: () => {},
 	updateProductQuantity: () => {},
-	placeOrder: () => Promise.reject('Method not implemented')
+	placeOrder: () => Promise.reject('Method not implemented'),
+	findOrder: () => Promise.reject('Method not implemented')
 })
 
 interface CartProviderProps {
@@ -98,12 +100,36 @@ export default function CartProvider({ children }: CartProviderProps) {
 		}
 	}
 
+	async function findOrder(orderId: Order['id']): Promise<Order | undefined> {
+		const token = localStorage.getItem('authToken')
+
+		if (token) {
+			const response = await fetch(`${ process.env.NEXT_PUBLIC_API_URL }/orders/${orderId}`, {
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${ token }`,
+					'Content-Type': 'application/json'
+				},
+			})
+
+			if (!response.ok) {
+				throw new Error('ERROR! Failed to find order.')
+			}
+
+			const data: Order = await response.json()
+
+			return data
+		}
+		
+	}
+
 	const shopCartValue = {
 		cartProducts,
 		addToCart,
 		removeFromCart,
 		updateProductQuantity,
-		placeOrder
+		placeOrder,
+		findOrder
 	}
 
 	useEffect(() => {
