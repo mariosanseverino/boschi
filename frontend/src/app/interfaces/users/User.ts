@@ -7,9 +7,17 @@ export interface LoginRequest {
 
 export interface UserAddress {
     id: number,
-    location: string,
     userId: User['id']
+    postalCode: string,
+    street: string,
+    number: number,
+    complement: string,
+    city: string,
+    state: string,
+    country: string,
 }
+
+export interface UserAddressRequest extends Omit<UserAddress, 'id' | 'userId'> {}
 
 export interface User {
     id: number,
@@ -25,7 +33,7 @@ export interface UserRegisterRequest {
     email: User['email'],
     password: User['password'],
     name: User['name'],
-    address: UserAddress['location'],
+    address: UserAddressRequest,
     birthday: User['birthday'],
 }
 

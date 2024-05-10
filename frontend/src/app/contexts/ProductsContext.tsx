@@ -10,17 +10,17 @@ import React, {
 import { requestData } from '../requests'
 import { Product } from '../interfaces/products/Product'
 
-export type ProductsPropsType = {
+export type ProductsContextProps = {
 	isLoading: boolean,
 	products: Product[],
-	setProducts: Dispatch<SetStateAction<Product[]>>
+	setProducts: Dispatch<SetStateAction<Product[]>>,
 	getProduct: (id: number) => Promise<Product>
 }
 
-export const ProductsContext = createContext<ProductsPropsType>({
+export const ProductsContext = createContext<ProductsContextProps>({
 	isLoading: true,
 	products: [],
-	setProducts: () => { },
+	setProducts: () => {},
 	getProduct: async (id: number) => {
 		const response = await fetch( `${process.env.NEXT_PUBLIC_API_URL}/products/${id}` )
 		const product = await response.json()

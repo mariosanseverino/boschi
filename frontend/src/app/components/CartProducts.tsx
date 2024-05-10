@@ -1,13 +1,13 @@
 import React from 'react'
 import { OrderProduct } from '../interfaces/orders/Order'
-import { useShopCartContext } from '../contexts/CartContext'
+import { useCartContext } from '../contexts/CartContext'
 
 interface CartProducts {
 	cartProducts: OrderProduct[]
 }
 
 export default function CartProducts() {
-	const { cartProducts, removeFromCart, updateProductQuantity } = useShopCartContext()
+	const { cartProducts, removeFromCart, updateProductQuantity } = useCartContext()
 
 	return (
 		<>

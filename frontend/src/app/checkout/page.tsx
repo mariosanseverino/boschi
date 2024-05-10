@@ -1,11 +1,13 @@
 'use client'
 import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import CartProducts from '../components/CartProducts'
-import { useShopCartContext } from '../contexts/CartContext'
+import { useCartContext } from '../contexts/CartContext'
 import { ShipmentType } from '../interfaces/orders/Order'
 
 export default function Checkout() {
-	const { cartProducts, placeOrder } = useShopCartContext()
+	const router = useRouter()
+	const { cartProducts, placeOrder } = useCartContext()
 	const [shipping, setShipping] = useState<ShipmentType>('Standard')
 
 	function calculateShipping() {
@@ -44,16 +46,22 @@ export default function Checkout() {
 			<p>Total {`R$ ${calculateShipping() + subtotal}`}</p>
 			<button
 				className='bg-gray-600 text-white'
-				onClick={ () => placeOrder({
-					discount: 0,
-					shipping: calculateShipping(),
-					subtotal,
-					total: calculateShipping() + subtotal,
-					userId: 1,
-					address: 'Av. Padre Leopoldo Brentano, 110 - Porto Alegre/RS',
-					shipmentType: shipping,
-					productsList: cartProducts
-				}) }
+				onClick={ async () => {
+					const order = await placeOrder({
+						discount: 0,
+						shipping: calculateShipping(),
+						subtotal,
+						total: calculateShipping() + subtotal,
+						userId: 1,
+						addressId: 1,
+						shipmentType: shipping,
+						productsList: cartProducts
+					})
+
+					if (order) {
+						router.push(`/thankyou?orderId=${ order.id }`)
+					}
+				}}
 			>
 				Finish
 			</button>

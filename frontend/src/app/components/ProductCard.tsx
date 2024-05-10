@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Product, ProductVariant } from '../interfaces/products/Product'
-import { useShopCartContext } from '../contexts/CartContext'
+import { useCartContext } from '../contexts/CartContext'
 
 interface ProductCardProps {
 	product: Product,
@@ -9,7 +9,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, color }: ProductCardProps) {
 	const [productQuantity, setProductQuantity] = useState(1)
-	const { addToCart } = useShopCartContext()
+	const { addToCart } = useCartContext()
 
 	return (
 		<div className='border-red-400 border-2'>

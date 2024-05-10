@@ -1,11 +1,11 @@
 import React from 'react'
-import { useShopCartContext } from '../contexts/CartContext'
+import { useCartContext } from '../contexts/CartContext'
 import Link from 'next/link'
 import CartProducts from './CartProducts'
 import { OrderProduct } from '../interfaces/orders/Order'
 
 export default function Cart() {
-	const { cartProducts } = useShopCartContext()
+	const { cartProducts } = useCartContext()
 
 	return (
 		<div>

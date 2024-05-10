@@ -17,7 +17,15 @@ async function main() {
 			name: 'Mario Sanseverino',
 			address: {
 				create: [
-					{ location: 'Av. Padre Leopoldo Brentano, 110 - Porto Alegre/RS' }
+					{
+						postalCode: '90250-590',
+						street: 'Av. Padre Leopoldo Brentano',
+						complement: '',
+						number: 110,
+						city: 'Porto Alegre',
+						state: 'RS',
+						country: 'Brazil',
+					}
 				]},
 			birthday: '25051993',
 		}
@@ -28,7 +36,15 @@ async function main() {
 			password: hashedTestPassword,
 			name: 'Test',
 			address: { create: [
-				{ location: 'Test' }
+				{
+					postalCode: '99999-999',
+					street: 'Av. Teste',
+					complement: '',
+					number: 666,
+					city: 'Porto Alegre',
+					state: 'RS',
+					country: 'Brazil',
+				}
 			]},
 			birthday: '08032024',
 		}

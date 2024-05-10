@@ -5,7 +5,7 @@ import { User, UserAddress } from '../interfaces/users/User'
 export default class OrdersModel {
 	private ordersModel = new PrismaClient()
 
-	async create({ discount, shipping, subtotal, total, userId, address, shipmentType, productsList }: OrderRequest): Promise<Order> {
+	async create({ createdAt, discount, shipping, subtotal, total, userId, addressId, shipmentType, productsList }: OrderRequest): Promise<Order> {
 		await this.findProducts(productsList)
 		const user = await this.findUser(userId)
 
@@ -15,12 +15,13 @@ export default class OrdersModel {
 
 		const newOrder = await this.ordersModel.order.create({
 			data: {
+				createdAt,
 				discount,
 				shipping,
 				subtotal,
 				total,
 				userId,
-				addressLocation: address,
+				addressId,
 				shipmentType,
 				orderStatus: 'Pending',
 				OrderProduct: {
@@ -64,12 +65,14 @@ export default class OrdersModel {
 
 		return {
 			id: newOrder.id,
+			createdAt,
+			updatedAt: createdAt,
 			discount,
 			shipping,
 			subtotal,
 			total,
 			userId,
-			address,
+			addressId,
 			shipmentType,
 			orderStatus: newOrder.orderStatus,
 			productsList
@@ -97,9 +100,9 @@ export default class OrdersModel {
 			throw new Error(`Unable to update order with ID ${orderId}.`)
 		}
 
-		const { addressLocation, OrderProduct, ...orderData } = updatedOrder
+		const { OrderProduct, ...orderData } = updatedOrder
 
-		return { ...orderData, address: addressLocation, productsList: OrderProduct }
+		return { ...orderData, productsList: OrderProduct }
 	}
 
 	async get(): Promise<Order[]> {
@@ -109,7 +112,7 @@ export default class OrdersModel {
 			throw new Error('Unable to fetch orders.')
 		}
 
-		return fetchOrders.map(({ OrderProduct, addressLocation, ...order }) => ({ ...order, productsList: OrderProduct, address: addressLocation }))
+		return fetchOrders.map(({ OrderProduct, addressId, ...order }) => ({ ...order, productsList: OrderProduct, addressId }))
 	}
 
 	async getById(orderId: Order['id']): Promise<Order> {
@@ -119,9 +122,9 @@ export default class OrdersModel {
 			throw new Error(`Unable to find order with ID ${ orderId }.`)
 		}
 		
-		const { OrderProduct, addressLocation, ...orderData } = order
+		const { OrderProduct, ...orderData } = order
 
-		return { ...orderData, address: addressLocation, productsList: OrderProduct }
+		return { ...orderData, productsList: OrderProduct }
 	}
 
 	async findUser(userId: User['id']): Promise<boolean> {

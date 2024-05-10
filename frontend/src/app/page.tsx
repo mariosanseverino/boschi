@@ -17,6 +17,13 @@ export default function Home() {
 				</button>
 			</Link>
 			<Link
+				href='/register'
+			>
+				<button>
+					Register
+				</button>
+			</Link>
+			<Link
 				href='/shop'
 			>
 				<button>
