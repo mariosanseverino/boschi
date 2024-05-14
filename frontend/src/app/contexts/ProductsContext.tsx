@@ -8,13 +8,15 @@ import React, {
 	useEffect
 } from 'react'
 import { requestData } from '../requests'
-import { Product } from '../interfaces/products/Product'
+import { Product, ProductVariant } from '../interfaces/products/Product'
 
 export type ProductsContextProps = {
 	isLoading: boolean,
 	products: Product[],
 	setProducts: Dispatch<SetStateAction<Product[]>>,
-	getProduct: (id: number) => Promise<Product>
+	getProduct: (id: number) => Promise<Product>,
+	getProductColors: (variants: ProductVariant[]) => ProductVariant['color'][]
+	getProductSizes: (variants: ProductVariant[]) => ProductVariant['size'][]
 }
 
 export const ProductsContext = createContext<ProductsContextProps>({
@@ -25,6 +27,24 @@ export const ProductsContext = createContext<ProductsContextProps>({
 		const response = await fetch( `${process.env.NEXT_PUBLIC_API_URL}/products/${id}` )
 		const product = await response.json()
 		return product as Product
+	},
+	getProductColors: (variants: ProductVariant[]) => {
+		const uniqueColors: ProductVariant['color'][] = []
+		variants.forEach(variant => {
+			if (!uniqueColors.includes(variant.color)) {
+				uniqueColors.push(variant.color)
+			}
+		})
+		return uniqueColors
+	},
+	getProductSizes: (variants: ProductVariant[]) => {
+		const uniqueSizes: ProductVariant['size'][] = []
+		variants.forEach(variant => {
+			if (!uniqueSizes.includes(variant.size)) {
+				uniqueSizes.push(variant.size)
+			}
+		})
+		return uniqueSizes
 	}
 })
 
@@ -42,6 +62,26 @@ export default function ProductsProvider({ children }: ProductsProviderProps) {
 		return product as Product
 	}
 
+	function getProductColors(variants: ProductVariant[]) {
+		const uniqueColors: ProductVariant['color'][] = []
+		variants.forEach(variant => {
+			if (!uniqueColors.includes(variant.color)) {
+				uniqueColors.push(variant.color)
+			}
+		})
+		return uniqueColors
+	}
+
+	function getProductSizes(variants: ProductVariant[]) {
+		const uniqueColors: ProductVariant['size'][] = []
+		variants.forEach(variant => {
+			if (!uniqueColors.includes(variant.size)) {
+				uniqueColors.push(variant.size)
+			}
+		})
+		return uniqueColors
+	}
+
 	useEffect(() => {
 		requestData('/products').then(data => {
 			setProducts(data)
@@ -53,7 +93,9 @@ export default function ProductsProvider({ children }: ProductsProviderProps) {
 		isLoading,
 		products,
 		setProducts,
-		getProduct
+		getProduct,
+		getProductColors,
+		getProductSizes
 	}
 
 	return (
