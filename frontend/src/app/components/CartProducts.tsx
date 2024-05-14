@@ -16,6 +16,7 @@ export default function CartProducts() {
 					<div key={ index } className='border-red-400 border-2'>
 						<p>{ cartProduct.name }</p>
 						<p>{ cartProduct.color }</p>
+						<p>{ cartProduct.size }</p>
 						<fieldset>
 							<input
 								type='number'
