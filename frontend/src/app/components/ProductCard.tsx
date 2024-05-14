@@ -12,7 +12,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, color }: ProductCardProps) {
-	const { getProductSizes } = useProductsContext()
+	const { getProductSizes, getColorPrice } = useProductsContext()
 	const [productQuantity, setProductQuantity] = useState<OrderProduct['quantity']>(1)
 	const [selectedSize, setSelectedSize] = useState<ProductVariant['size']>('')
 	const { addToCart } = useCartContext()
@@ -21,21 +21,19 @@ export default function ProductCard({ product, color }: ProductCardProps) {
 	return (
 		<div className='border-red-400 border-2'>
 			<Link href={ `/${product.id}` }>
-				<h1>{ product.name }</h1>
+				<h2>{ product.name }</h2>
 			</Link>
-			<h2>{color}</h2>
+			<h2>{ getColorPrice(color, product) }</h2>
+			<h2>{ color }</h2>
 			<fieldset>
 				<label htmlFor='product-quantity'>Quantity</label>
 				<input
 					type='number'
 					name='product-quantity'
-					min={1}
-					value={productQuantity}
-					onChange={({ target: { value } }) => setProductQuantity(Number(value))}
+					min={ 1 }
+					value={ productQuantity }
+					onChange={ ({ target: { value } }) => setProductQuantity(Number(value)) }
 				/>
-			</fieldset>
-			<fieldset>
-				{  }
 			</fieldset>
 			<fieldset>
 				{ productSizes.map((size, sizeIndex) => (
@@ -51,14 +49,14 @@ export default function ProductCard({ product, color }: ProductCardProps) {
 				)) }
 			</fieldset>
 			<button
-				onClick={() => addToCart({
+				onClick={ () => addToCart({
 					productId: product.id,
 					name: product.name,
 					color: color,
 					price: product.variants.find((variant) => variant.color === color)!.price,
 					quantity: productQuantity,
 					size: selectedSize
-				})}
+				}) }
 				className='bg-gray-600 text-white'
 			>
 					Add to cart

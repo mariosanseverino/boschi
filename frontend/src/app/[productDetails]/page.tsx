@@ -44,7 +44,7 @@ export default function ProductDetails() {
 		<>
 			<p>Product Details</p>
 			<h2>{ `${ product.name }` }</h2>
-			<h1>{ `${ getColorPrice(selectedColor, product) }` }</h1>
+			<h1>{ `R$ ${ getColorPrice(selectedColor, product) }` }</h1>
 			<p>Select color</p>
 			{ productColors.map((color, colorIndex) => (
 				<ProductOptions
