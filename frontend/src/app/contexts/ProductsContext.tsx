@@ -15,38 +15,12 @@ export type ProductsContextProps = {
 	products: Product[],
 	setProducts: Dispatch<SetStateAction<Product[]>>,
 	getProduct: (id: number) => Promise<Product>,
-	getProductColors: (variants: ProductVariant[]) => ProductVariant['color'][]
-	getProductSizes: (variants: ProductVariant[]) => ProductVariant['size'][]
+	getProductColors: (variants: ProductVariant[]) => ProductVariant['color'][],
+	getProductSizes: (variants: ProductVariant[]) => ProductVariant['size'][],
+	getColorPrice: (color: ProductVariant['color'], currentProduct: Product) => ProductVariant['price'] | string
 }
 
-export const ProductsContext = createContext<ProductsContextProps>({
-	isLoading: true,
-	products: [],
-	setProducts: () => {},
-	getProduct: async (id: number) => {
-		const response = await fetch( `${process.env.NEXT_PUBLIC_API_URL}/products/${id}` )
-		const product = await response.json()
-		return product as Product
-	},
-	getProductColors: (variants: ProductVariant[]) => {
-		const uniqueColors: ProductVariant['color'][] = []
-		variants.forEach(variant => {
-			if (!uniqueColors.includes(variant.color)) {
-				uniqueColors.push(variant.color)
-			}
-		})
-		return uniqueColors
-	},
-	getProductSizes: (variants: ProductVariant[]) => {
-		const uniqueSizes: ProductVariant['size'][] = []
-		variants.forEach(variant => {
-			if (!uniqueSizes.includes(variant.size)) {
-				uniqueSizes.push(variant.size)
-			}
-		})
-		return uniqueSizes
-	}
-})
+export const ProductsContext = createContext<ProductsContextProps>({} as ProductsContextProps)
 
 interface ProductsProviderProps {
 	children: React.ReactNode
@@ -82,6 +56,15 @@ export default function ProductsProvider({ children }: ProductsProviderProps) {
 		return uniqueColors
 	}
 
+	function getColorPrice(color: ProductVariant['color'], currentProduct: Product): ProductVariant['price'] | string {
+		const currentVariant = currentProduct.variants.find((variant) => color === variant.color)
+		if (currentVariant) {
+			return currentVariant.price
+		} else {
+			return 'Product not available in this color'
+		}
+	}
+
 	useEffect(() => {
 		requestData('/products').then(data => {
 			setProducts(data)
@@ -95,7 +78,8 @@ export default function ProductsProvider({ children }: ProductsProviderProps) {
 		setProducts,
 		getProduct,
 		getProductColors,
-		getProductSizes
+		getProductSizes,
+		getColorPrice
 	}
 
 	return (

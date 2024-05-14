@@ -7,7 +7,7 @@ import NotFound from '../components/NotFound'
 import ProductOptions from '../components/ProductOptions'
 
 export default function ProductDetails() {
-	const { getProduct, getProductColors, getProductSizes } = useProductsContext()
+	const { getProduct, getProductColors, getProductSizes, getColorPrice } = useProductsContext()
 	const productId = usePathname().slice(1)
 	
 	const [product, setProduct] = useState<Product | undefined>(undefined)
@@ -16,22 +16,25 @@ export default function ProductDetails() {
 	const [selectedColor, setSelectedColor] = useState<ProductVariant['color']>('')
 	const [selectedSize, setSelectedSize] = useState<ProductVariant['size']>('')
 
-
 	useEffect(() => {		
 		const fetchProduct = async () => {
 			if (!isNaN(Number(productId))) {
 				const foundProduct = await getProduct(Number(productId))
 
 				if (foundProduct) {
+					const colors = getProductColors(foundProduct.variants)
+					const sizes = getProductSizes(foundProduct.variants)
 					setProduct(foundProduct)
 					setProductColors(getProductColors(foundProduct.variants))
 					setProductSizes(getProductSizes(foundProduct.variants))
+					setSelectedColor(colors[0])
+					setSelectedSize(sizes[0])
 				}
 			}
 		}
 
 		fetchProduct()
-	}, [productId, productColors])
+	}, [productId])
 
 	if (product === undefined) {
 		return <NotFound />
@@ -40,8 +43,8 @@ export default function ProductDetails() {
 	return (
 		<>
 			<p>Product Details</p>
-			<p>{ `${ product.name }` }</p>
-			<p>{ `${ product.description }` }</p>
+			<h2>{ `${ product.name }` }</h2>
+			<h1>{ `${ getColorPrice(selectedColor, product) }` }</h1>
 			<p>Select color</p>
 			{ productColors.map((color, colorIndex) => (
 				<ProductOptions
@@ -66,6 +69,7 @@ export default function ProductDetails() {
 					{ size }
 				</ProductOptions>
 			)) }
+			<p>{ `${ product.description }` }</p>
 		</>
 	)
 }
