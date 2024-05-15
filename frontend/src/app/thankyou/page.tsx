@@ -8,7 +8,7 @@ export default function ThankYou() {
 	const searchParams = useSearchParams()
 	const orderId = searchParams.get('orderId')
 	const { findOrder } = useCartContext()
-	const [order, setOrder] = useState<Order>({} as Order)
+	const [order, setOrder] = useState<Order | null>(null)
 
 	function formatDate(createdAt: Date) {
 		const date = new Date(createdAt)
@@ -24,8 +24,7 @@ export default function ThankYou() {
 		async function getOrder(orderId: Order['id']) {
 			const order = await findOrder(orderId)
 			if (order) {
-				console.log(order)
-				setOrder(order)
+				setOrder(order)				
 			}
 		}
 
@@ -42,13 +41,29 @@ export default function ThankYou() {
 		<Suspense>
 			<section>
 				<h1>Order Successful!</h1>
-				<h2>Thank you for your purchase</h2>
+				<h2>Thank you for your purchase.</h2>
 				<p>
 					{ `Order ID: ${ orderId }` }
 				</p>
 				<div>
-					<h2>Order Details:</h2>
+					<h2>Order Summary:</h2>
 					<p>{ `${ formatDate(order.createdAt) }` }</p>
+					<ul>
+						{ order.productsList && order.productsList.map((product, productIndex) => (
+							<li key={ productIndex }>
+								{ <p>{ product.name }</p> }
+								{ <p>R$ { product.price }</p> }
+								{ <p>{ product.color }</p> }
+								{ <p>Size { product.size }</p> }
+							</li>
+						)) }
+					</ul>
+					<div>
+						<p>Discount R$ { `${ order.discount }` }</p>
+						<p>Subtotal R$ { `${ order.subtotal }` }</p>
+						<p>Shipping R$ { `${ order.shipping }` }</p>
+						<p>Total R$ { `${ order.total }` }</p>
+					</div>
 				</div>
 			</section>
 		</Suspense>

@@ -15,7 +15,9 @@ export default function CartProducts() {
 				cartProducts.map((cartProduct: OrderProduct, index: number) => (
 					<div key={ index } className='border-red-400 border-2'>
 						<p>{ cartProduct.name }</p>
+						<p>{ `R$ ${ cartProduct.price }` }</p>
 						<p>{ cartProduct.color }</p>
+						<p>{ `Size ${ cartProduct.size }` }</p>
 						<fieldset>
 							<input
 								type='number'

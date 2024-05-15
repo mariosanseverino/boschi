@@ -1,29 +1,26 @@
 import React from 'react'
-import { Product, ProductVariant } from '../interfaces/products/Product'
+import { Product } from '../interfaces/products/Product'
 import ProductCard from './ProductCard'
+import { useProductsContext } from '../contexts/ProductsContext'
 
 interface ProductsListProps {
     products: Product[]
 }
 
 export default function ProductsList({ products }: ProductsListProps) {
+	const { getProductColors: getUniqueColors } = useProductsContext()
+
 	return (
 		<>
-			{ products.map((product, index) => {
-				const uniqueColors: ProductVariant['color'][] = []
-				product.variants.map((variant) => {
-					if (!uniqueColors.includes(variant.color)) {
-						uniqueColors.push(variant.color)
-					}
-				})
-				return uniqueColors.map((color, colorIndex) => (
+			{ products.map((product, index) => (
+				getUniqueColors(product.variants).map((color, colorIndex) => (
 					<ProductCard
 						key={ `${ index }-${ colorIndex }`}
-						product={ product }
 						color={ color }
+						product={ product }
 					/>
 				))
-			})}
+			)) }
 		</>
 	)
 }

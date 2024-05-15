@@ -47,6 +47,52 @@ async function main() {
 					},
 				]
 			}
+		}})
+
+	await prisma.product.create({
+		data: {
+			name: 'Longsleeve T-Shirt',
+			description: 'Made of 100% Persian Cotton',
+			variants: {
+				create: [
+					{
+						price: 150,
+						color: 'White',
+						size: 'S',
+						quantity: 10
+					},
+					{
+						price: 150,
+						color: 'White',
+						size: 'M',
+						quantity: 10
+					},
+					{
+						price: 150,
+						color: 'White',
+						size: 'L',
+						quantity: 10
+					},
+					{
+						price: 150,
+						color: 'Black',
+						size: 'S',
+						quantity: 10
+					},
+					{
+						price: 150,
+						color: 'Black',
+						size: 'M',
+						quantity: 10
+					},
+					{
+						price: 150,
+						color: 'Black',
+						size: 'L',
+						quantity: 10
+					},
+				]
+			}
 		}
 	})
 }

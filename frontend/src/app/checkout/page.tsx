@@ -34,20 +34,23 @@ export default function Checkout() {
 				<select
 					name='shipping'
 					defaultValue='Standard'
-					onChange={({ target: { value } }) => setShipping(value as ShipmentType)}
+					onChange={ ({ target: { value } }) => setShipping(value as ShipmentType) }
 				>
 					<option value={ 'Standard' }>Standard</option>
 					<option value={ 'Express' }>Express</option>
 					<option value={ 'NextDay' }>Next day</option>
 				</select>
 			</fieldset>
-			<p>Subtotal {`R$ ${subtotal}`}</p>
-			<p>Shipping {`R$ ${calculateShipping()}`}</p>
-			<p>Total {`R$ ${calculateShipping() + subtotal}`}</p>
+			<p>Subtotal { `R$ ${ subtotal}` }</p>
+			<p>Shipping { `R$ ${ calculateShipping() }` }</p>
+			<p>Total { `R$ ${ calculateShipping() + subtotal }` }</p>
 			<button
 				className='bg-gray-600 text-white'
 				onClick={ async () => {
-					const order = await placeOrder({
+					const now = new Date
+					placeOrder({
+						createdAt: now,
+						updatedAt: now,
 						discount: 0,
 						shipping: calculateShipping(),
 						subtotal,
@@ -56,11 +59,11 @@ export default function Checkout() {
 						addressId: 1,
 						shipmentType: shipping,
 						productsList: cartProducts
+					}).then((order) => {
+						if (order) {
+							router.push(`/thankyou?orderId=${ order.id }`)
+						}
 					})
-
-					if (order) {
-						router.push(`/thankyou?orderId=${ order.id }`)
-					}
 				}}
 			>
 				Finish
