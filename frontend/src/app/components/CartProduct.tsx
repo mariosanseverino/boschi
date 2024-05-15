@@ -1,12 +1,13 @@
 import React from 'react'
 import { OrderProduct } from '../interfaces/orders/Order'
 import { useCartContext } from '../contexts/CartContext'
+import QuantitySelector from './QuantitySelector'
 
-interface CartProducts {
+interface CartProduct {
 	cartProducts: OrderProduct[]
 }
 
-export default function CartProducts() {
+export default function CartProduct() {
 	const { cartProducts, removeFromCart, updateProductQuantity } = useCartContext()
 
 	return (
@@ -18,15 +19,11 @@ export default function CartProducts() {
 						<p>{ `R$ ${ cartProduct.price }` }</p>
 						<p>{ cartProduct.color }</p>
 						<p>{ `Size ${ cartProduct.size }` }</p>
-						<fieldset>
-							<input
-								type='number'
-								name='quantity'
-								min={ 1 }
-								value={ cartProduct.quantity }
-								onChange={ ({ target: { value } }) => updateProductQuantity(cartProduct, Number(value)) }
-							/>
-						</fieldset>
+						<QuantitySelector
+							value={ cartProduct.quantity}
+							onChange={ (newQuantity) => updateProductQuantity(cartProduct, newQuantity) }
+
+						/>
 						<button
 							className='bg-gray-600 text-white'
 							onClick={ () => removeFromCart(cartProduct) }

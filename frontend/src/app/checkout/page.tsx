@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import CartProducts from '../components/CartProducts'
+import CartProduct from '../components/CartProduct'
 import { useCartContext } from '../contexts/CartContext'
 import { ShipmentType } from '../interfaces/orders/Order'
 
@@ -28,7 +28,7 @@ export default function Checkout() {
 	return (
 		<>
 			<h1>Checkout</h1>
-			<CartProducts />
+			<CartProduct />
 			<fieldset>
 				<label htmlFor='shipping'>Shipping</label>
 				<select
