@@ -5,6 +5,7 @@ import { OrderProduct } from '../interfaces/orders/Order'
 import { useCartContext } from '../contexts/CartContext'
 import { useProductsContext } from '../contexts/ProductsContext'
 import ProductOptions from './ProductOptions'
+import QuantitySelector from './QuantitySelector'
 
 interface ProductCardProps {
 	product: Product,
@@ -27,12 +28,9 @@ export default function ProductCard({ product, color }: ProductCardProps) {
 			<h2>{ color }</h2>
 			<fieldset>
 				<label htmlFor='product-quantity'>Quantity</label>
-				<input
-					type='number'
-					name='product-quantity'
-					min={ 1 }
-					value={ productQuantity }
-					onChange={ ({ target: { value } }) => setProductQuantity(Number(value)) }
+				<QuantitySelector
+					value={ productQuantity}
+					onChange={ setProductQuantity }
 				/>
 			</fieldset>
 			<fieldset>

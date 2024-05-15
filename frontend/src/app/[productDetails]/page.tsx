@@ -5,6 +5,7 @@ import { useProductsContext } from '../contexts/ProductsContext'
 import { Product, ProductVariant } from '../interfaces/products/Product'
 import NotFound from '../components/NotFound'
 import ProductOptions from '../components/ProductOptions'
+import QuantitySelector from '../components/QuantitySelector'
 import { useCartContext } from '../contexts/CartContext'
 import { OrderProduct } from '../interfaces/orders/Order'
 
@@ -75,12 +76,9 @@ export default function ProductDetails() {
 			)) }
 			<p>{ `${ product.description }` }</p>
 			<p>Select quantity</p>
-			<input
-				type='number'
-				name='quantity'
-				defaultValue={ 1 }
-				min={ 1 }
-				onChange={ ({ target: { value } }) => setSelectedQuantity(Number(value)) }
+			<QuantitySelector
+				value={ selectedQuantity}
+				onChange={ setSelectedQuantity }
 			/>
 			<button
 				onClick={ () => addToCart({
