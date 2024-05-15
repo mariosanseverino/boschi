@@ -77,8 +77,8 @@ export default function CartProvider({ children }: CartProviderProps) {
 
 	async function placeOrder(order: OrderRequest): Promise<Order | undefined> {
 		const token = localStorage.getItem('authToken')
-	
-		if (token) {
+		
+		if (token) {			
 			const response = await fetch(`${ process.env.NEXT_PUBLIC_API_URL }/orders`, {
 				method: 'POST',
 				headers: {

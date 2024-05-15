@@ -17,7 +17,7 @@ export type ProductsContextProps = {
 	getProduct: (id: number) => Promise<Product>,
 	getProductColors: (variants: ProductVariant[]) => ProductVariant['color'][],
 	getProductSizes: (variants: ProductVariant[]) => ProductVariant['size'][],
-	getColorPrice: (color: ProductVariant['color'], currentProduct: Product) => ProductVariant['price'] | string
+	getColorPrice: (color: ProductVariant['color'], currentProduct: Product) => ProductVariant['price']
 }
 
 export const ProductsContext = createContext<ProductsContextProps>({} as ProductsContextProps)
@@ -56,12 +56,12 @@ export default function ProductsProvider({ children }: ProductsProviderProps) {
 		return uniqueColors
 	}
 
-	function getColorPrice(color: ProductVariant['color'], currentProduct: Product): ProductVariant['price'] | string {
+	function getColorPrice(color: ProductVariant['color'], currentProduct: Product): ProductVariant['price'] {
 		const currentVariant = currentProduct.variants.find((variant) => color === variant.color)
 		if (currentVariant) {
 			return currentVariant.price
 		} else {
-			return 'Product not available in this color'
+			return 0
 		}
 	}
 

@@ -23,7 +23,7 @@ export default function ProductCard({ product, color }: ProductCardProps) {
 			<Link href={ `/${product.id}` }>
 				<h2>{ product.name }</h2>
 			</Link>
-			<h2>{ getColorPrice(color, product) }</h2>
+			<h2>{ `R$ ${ getColorPrice(color, product) }` }</h2>
 			<h2>{ color }</h2>
 			<fieldset>
 				<label htmlFor='product-quantity'>Quantity</label>

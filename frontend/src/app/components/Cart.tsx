@@ -16,7 +16,7 @@ export default function Cart() {
 			}
 			<div className='border-red-400 border-2'>
 				<p>Total</p>
-				<p>{cartProducts.reduce((acc, product: OrderProduct) => acc + (product.price * product.quantity), 0)}</p>
+				<p>{ `R$ ${ cartProducts.reduce((acc, product: OrderProduct) => acc + (product.price * product.quantity), 0) }` }</p>
 			</div>
 			<Link href='/checkout'>
 				<button className='bg-gray-600 text-white'>

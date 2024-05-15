@@ -5,9 +5,12 @@ import { useProductsContext } from '../contexts/ProductsContext'
 import { Product, ProductVariant } from '../interfaces/products/Product'
 import NotFound from '../components/NotFound'
 import ProductOptions from '../components/ProductOptions'
+import { useCartContext } from '../contexts/CartContext'
+import { OrderProduct } from '../interfaces/orders/Order'
 
 export default function ProductDetails() {
 	const { getProduct, getProductColors, getProductSizes, getColorPrice } = useProductsContext()
+	const { addToCart } = useCartContext()
 	const productId = usePathname().slice(1)
 	
 	const [product, setProduct] = useState<Product | undefined>(undefined)
@@ -15,6 +18,7 @@ export default function ProductDetails() {
 	const [productSizes, setProductSizes] = useState<ProductVariant['size'][]>([])
 	const [selectedColor, setSelectedColor] = useState<ProductVariant['color']>('')
 	const [selectedSize, setSelectedSize] = useState<ProductVariant['size']>('')
+	const [selectedQuantity, setSelectedQuantity] = useState<OrderProduct['quantity']>(1)
 
 	useEffect(() => {		
 		const fetchProduct = async () => {
@@ -70,6 +74,26 @@ export default function ProductDetails() {
 				</ProductOptions>
 			)) }
 			<p>{ `${ product.description }` }</p>
+			<p>Select quantity</p>
+			<input
+				type='number'
+				name='quantity'
+				defaultValue={ 1 }
+				min={ 1 }
+				onChange={ ({ target: { value } }) => setSelectedQuantity(Number(value)) }
+			/>
+			<button
+				onClick={ () => addToCart({
+					productId: product.id,
+					name: product.name,
+					color: selectedColor,
+					price: getColorPrice(selectedColor, product),
+					quantity: selectedQuantity,
+					size: selectedSize
+				}) }
+			>
+				Add to cart
+			</button>
 		</>
 	)
 }
