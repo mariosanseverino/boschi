@@ -47,13 +47,15 @@ export default function ProductsProvider({ children }: ProductsProviderProps) {
 	}
 
 	function getProductSizes(variants: ProductVariant[]) {
-		const uniqueColors: ProductVariant['size'][] = []
+		const sizeOrder = ['XS', 'S', 'M', 'L', 'XL']
+		const uniqueSizes: ProductVariant['size'][] = []
+		
 		variants.forEach(variant => {
-			if (!uniqueColors.includes(variant.size)) {
-				uniqueColors.push(variant.size)
+			if (!uniqueSizes.includes(variant.size)) {
+				uniqueSizes.push(variant.size)
 			}
 		})
-		return uniqueColors
+		return uniqueSizes.sort((a, b) => sizeOrder.indexOf(a) - sizeOrder.indexOf(b))
 	}
 
 	function getColorPrice(color: ProductVariant['color'], currentProduct: Product): ProductVariant['price'] {
