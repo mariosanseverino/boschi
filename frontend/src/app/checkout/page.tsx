@@ -9,8 +9,6 @@ export default function Checkout() {
 	const router = useRouter()
 	const { cartProducts, placeOrder } = useCartContext()
 	const [shipping, setShipping] = useState<ShipmentType>('Standard')
-
-	console.log('Checkout cartProducts:', cartProducts)
 	
 	function calculateShipping() {
 		switch (shipping) {
