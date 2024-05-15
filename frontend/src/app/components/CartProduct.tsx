@@ -8,7 +8,7 @@ type CartProductProps = {
 	updateProductQuantity: (cartProduct: OrderProduct, newQuantity: OrderProduct['quantity']) => void
 }
 
-export default function CartProduct({ cartProduct, removeFromCart, updateProductQuantity }: CartProductProps ) {
+export default function CartProduct({ cartProduct, removeFromCart, updateProductQuantity }: CartProductProps ) {	
 	return (
 		<>
 			<div className='border-red-400 border-2'>

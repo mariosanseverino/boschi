@@ -1,8 +1,8 @@
 import React from 'react'
 import { useCartContext } from '../contexts/CartContext'
 import Link from 'next/link'
-import CartProduct from './CartProduct'
 import { OrderProduct } from '../interfaces/orders/Order'
+import CartProductsList from './CartProductsList'
 
 export default function Cart() {
 	const { cartProducts } = useCartContext()
@@ -12,7 +12,7 @@ export default function Cart() {
 			<p>Shopping Cart</p>
 			{cartProducts.length < 1
 				? <p>Empty</p>
-				: <CartProduct />
+				: <CartProductsList cartProducts={ cartProducts }/>
 			}
 			<div className='border-red-400 border-2'>
 				<p>Total</p>

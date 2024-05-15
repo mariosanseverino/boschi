@@ -33,7 +33,6 @@ export default function QuantitySelector ({ value, min = 1, onChange }: Quantity
 			<input
 				type='number'
 				name='quantity'
-				defaultValue={ 1 }
 				min={ min }
 				value={ value }
 				className='remove-arrow text-center'

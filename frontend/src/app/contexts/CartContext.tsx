@@ -137,7 +137,8 @@ export default function CartProvider({ children }: CartProviderProps) {
 	useEffect(() => {
 		const savedCart = localStorage.getItem('shopCart')
 		if (savedCart) {
-			setCartProducts(JSON.parse(savedCart))
+			const parsedCart = JSON.parse(savedCart)
+			setCartProducts(parsedCart)
 		}
 	}, [])
 

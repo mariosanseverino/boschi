@@ -1,15 +1,17 @@
 'use client'
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import CartProduct from '../components/CartProduct'
 import { useCartContext } from '../contexts/CartContext'
 import { ShipmentType } from '../interfaces/orders/Order'
+import CartProductsList from '../components/CartProductsList'
 
 export default function Checkout() {
 	const router = useRouter()
 	const { cartProducts, placeOrder } = useCartContext()
 	const [shipping, setShipping] = useState<ShipmentType>('Standard')
 
+	console.log('Checkout cartProducts:', cartProducts)
+	
 	function calculateShipping() {
 		switch (shipping) {
 		case 'Standard':
@@ -28,7 +30,9 @@ export default function Checkout() {
 	return (
 		<>
 			<h1>Checkout</h1>
-			<CartProduct />
+			<CartProductsList
+				cartProducts={ cartProducts }	
+			/>
 			<fieldset>
 				<label htmlFor='shipping'>Shipping</label>
 				<select

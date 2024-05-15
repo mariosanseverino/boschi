@@ -4,9 +4,13 @@ import CartProduct from './CartProduct'
 import { OrderProduct } from '../interfaces/orders/Order'
 import { useCartContext } from '../contexts/CartContext'
 
-export default function CartProductsList() {
-	const { cartProducts, removeFromCart, updateProductQuantity } = useCartContext()
+type CartProductsListProps = {
+    cartProducts: OrderProduct[]
+}
 
+export default function CartProductsList({ cartProducts }: CartProductsListProps) {
+	const { removeFromCart, updateProductQuantity } = useCartContext()
+    
 	return (
 		<>
 			{
