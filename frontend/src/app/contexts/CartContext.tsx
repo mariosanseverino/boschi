@@ -97,6 +97,8 @@ export default function CartProvider({ children }: CartProviderProps) {
 			setCartProducts([])
 	
 			return data
+		} else {
+			window.alert('Please, login first.')
 		}
 	}
 

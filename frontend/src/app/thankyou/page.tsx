@@ -53,6 +53,7 @@ export default function ThankYou() {
 							<li key={ productIndex }>
 								{ <p>{ product.name }</p> }
 								{ <p>R$ { product.price }</p> }
+								{ <p>{ product.color }</p> }
 								{ <p>Size { product.size }</p> }
 							</li>
 						)) }
