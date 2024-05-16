@@ -20,7 +20,7 @@ export default function ProductCard({ product, color }: ProductCardProps) {
 
 	return (
 		<div className='border-red-400 border-2'>
-			<Link href={ `/${product.id}` }>
+			<Link href={ `/${ product.id }-${ color }` }>
 				<h2>{ product.name }</h2>
 			</Link>
 			<h2>{ `R$ ${ getColorPrice(color, product) }` }</h2>

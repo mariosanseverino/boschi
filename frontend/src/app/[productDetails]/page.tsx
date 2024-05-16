@@ -11,8 +11,15 @@ import AddToCartBtn from '../components/AddToCartBtn'
 
 export default function ProductDetails() {
 	const { getProduct, getProductColors, getProductSizes, getColorPrice } = useProductsContext()
-	const productId = usePathname().slice(1)
-	
+	const pathname = usePathname()
+	const pathSegments = pathname.split('-')
+	const productId = pathSegments[0].slice(1)
+	let selectedColorFromURL: ProductVariant['color']
+
+	if (pathSegments.length > 1) {
+		selectedColorFromURL = pathSegments[pathSegments.length - 1]
+	}
+
 	const [product, setProduct] = useState<Product | undefined>(undefined)
 	const [productColors, setProductColors] = useState<ProductVariant['color'][]>([])
 	const [productSizes, setProductSizes] = useState<ProductVariant['size'][]>([])
@@ -29,9 +36,11 @@ export default function ProductDetails() {
 					const colors = getProductColors(foundProduct.variants)
 					const sizes = getProductSizes(foundProduct.variants)
 					setProduct(foundProduct)
-					setProductColors(getProductColors(foundProduct.variants))
-					setProductSizes(getProductSizes(foundProduct.variants))
-					setSelectedColor(colors[0])
+					setProductColors(colors)
+					setProductSizes(sizes)
+					
+					const initialColor = colors.includes(selectedColorFromURL) ? selectedColorFromURL : colors[0]
+					setSelectedColor(initialColor)
 					setSelectedSize(sizes[0])
 				}
 			}
