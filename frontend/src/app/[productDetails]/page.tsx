@@ -6,12 +6,11 @@ import { Product, ProductVariant } from '../interfaces/products/Product'
 import NotFound from '../components/NotFound'
 import ProductOptions from '../components/ProductOptions'
 import QuantitySelector from '../components/QuantitySelector'
-import { useCartContext } from '../contexts/CartContext'
 import { OrderProduct } from '../interfaces/orders/Order'
+import AddToCartBtn from '../components/AddToCartBtn'
 
 export default function ProductDetails() {
 	const { getProduct, getProductColors, getProductSizes, getColorPrice } = useProductsContext()
-	const { addToCart } = useCartContext()
 	const productId = usePathname().slice(1)
 	
 	const [product, setProduct] = useState<Product | undefined>(undefined)
@@ -80,18 +79,12 @@ export default function ProductDetails() {
 				value={ selectedQuantity}
 				onChange={ setSelectedQuantity }
 			/>
-			<button
-				onClick={ () => addToCart({
-					productId: product.id,
-					name: product.name,
-					color: selectedColor,
-					price: getColorPrice(selectedColor, product),
-					quantity: selectedQuantity,
-					size: selectedSize
-				}) }
-			>
-				Add to cart
-			</button>
+			<AddToCartBtn
+				product={ product }
+				color={ selectedColor }
+				size={ selectedSize }
+				quantity={ selectedQuantity }
+			/>
 		</>
 	)
 }
