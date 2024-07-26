@@ -34,4 +34,11 @@ ordersRouter.get(
 	(req: Request, res: Response) => ordersController.getById(req, res)
 )
 
+ordersRouter.get(
+	'/user/:id',
+	OrderValidation.validateId,
+	JWTValidation.verifyJWT,
+	(req: Request, res: Response) => ordersController.getByUserId(req, res)
+)
+
 export default ordersRouter

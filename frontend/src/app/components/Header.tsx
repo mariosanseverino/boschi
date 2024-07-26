@@ -25,6 +25,13 @@ export default function Header() {
 					Shop
 				</button>
 			</Link>
+			<Link
+				href='/profile'
+			>
+				<button>
+					Profile
+				</button>
+			</Link>
 		</header>
 	)
 }

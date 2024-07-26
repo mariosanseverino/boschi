@@ -127,6 +127,21 @@ export default class OrdersModel {
 		return { ...orderData, productsList: OrderProduct }
 	}
 
+	async getByUserId(userId: User['id']): Promise<Order[]> {
+		const user = await this.findUser(userId)
+
+		if (!user) {
+			throw new Error ('User invalid.')
+		}
+
+		const fetchOrders = await this.ordersModel.order.findMany({
+			where: { userId },
+			include: { OrderProduct: true }
+		})
+
+		return fetchOrders.map(({ OrderProduct, ...order }) => ({ ...order, productsList: OrderProduct }))
+	}
+
 	async findUser(userId: User['id']): Promise<boolean> {
 		const user = await this.ordersModel.user.findUnique({
 			where: { id: userId },

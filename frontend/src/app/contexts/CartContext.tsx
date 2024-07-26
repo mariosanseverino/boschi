@@ -6,6 +6,7 @@ import React, {
 	useEffect
 } from 'react'
 import { Order, OrderProduct, OrderRequest } from '../interfaces/orders/Order'
+// import { User } from '../interfaces/users/User'
 
 export type CartContextProps = {
 	cartProducts: OrderProduct[],
@@ -124,6 +125,29 @@ export default function CartProvider({ children }: CartProviderProps) {
 		}
 		
 	}
+
+	// async function fetcOrdersByUserId(userId: User['id']): Promise<Order[]> {
+	// 	const token = localStorage.getItem('authToken')
+
+	// 	if (token) {
+	// 		const response = await fetch(`${ process.env.NEXT_PUBLIC_API_URL }/orders`, {
+	// 			method: 'GET',
+	// 			headers: {
+	// 				'Authorization': `Bearer ${ token }`,
+	// 				'Content-Type': 'application/json'
+	// 			}
+	// 		})
+
+	// 		if (!response.ok) {
+	// 			throw new Error('ERROR! Couldn\'t fetch all orders')
+	// 		}
+
+	// 		const data: Order[] = await response.json()
+
+	// 		return data
+	// 	}
+
+	// }
 
 	const shopCartValue = {
 		cartProducts,
