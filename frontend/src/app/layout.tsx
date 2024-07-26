@@ -2,8 +2,9 @@ import React from 'react'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import CartProvider from './contexts/CartContext'
+import UserProvider from './contexts/UserContext'
 import ProductsProvider from './contexts/ProductsContext'
+import CartProvider from './contexts/CartContext'
 import Header from './components/Header'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -20,14 +21,16 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en' className='bg-gray-300'>
-			<ProductsProvider>
-				<CartProvider>
-					<body className={inter.className}>
-						<Header />
-						{children}
-					</body>
-				</CartProvider>
-			</ProductsProvider>
+			<UserProvider>
+				<ProductsProvider>
+					<CartProvider>
+						<body className={inter.className}>
+							<Header />
+							{children}
+						</body>
+					</CartProvider>
+				</ProductsProvider>
+			</UserProvider>
 		</html>
 	)
 }

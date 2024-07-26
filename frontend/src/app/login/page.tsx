@@ -1,11 +1,12 @@
 'use client'
 import React, { useState } from 'react'
+import api from '../requests'
 import { requestLogin } from '../requests'
 import { Token } from '../interfaces/users/Token'
-import api from '../requests'
+import { User, UserResponse } from '../interfaces/users/User'
 import LoginForm from '../components/LoginForm'
 import { useRouter } from 'next/navigation'
-import { User } from '../interfaces/users/User'
+import { useUserContext } from '../contexts/UserContext'
 
 
 export default function Login() {
@@ -13,15 +14,17 @@ export default function Login() {
 	const [password, setPassword] = useState<User['password']>('')
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const router = useRouter()
+	const { setUser } = useUserContext()
 
 	async function submitLogin(event: React.FormEvent) {
 		event.preventDefault()
 		setIsLoading(true)
 
 		try {
-			const { token }: Token = await requestLogin('/login', { email, password })
+			const { token, user }: { token: Token['token'], user: UserResponse } = await requestLogin('/login', { email, password })
 			localStorage.setItem('authToken', token)
-			api.defaults.headers.common['Authorization'] = `Bearer ${ token }`		
+			api.defaults.headers.common['Authorization'] = `Bearer ${ token }`
+			setUser(user)
 			router.push('/')
 		} catch (error) {
 			window.alert(error)
@@ -35,7 +38,7 @@ export default function Login() {
 			<h1>Login</h1>
 			{ isLoading
 				? <p>Loading...</p>
-				: (			<LoginForm
+				: (	<LoginForm
 					email={ email }
 					setEmail={ setEmail }
 					password={ password }
