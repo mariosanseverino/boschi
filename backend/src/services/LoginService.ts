@@ -18,7 +18,7 @@ export default class LoginService {
 		try {
 			const userResponse: UserResponse = await this.loginModel.login({ email, password })
 			const token = JWT.sign({ id: userResponse.id })
-			return { status: 'SUCCESSFUL', data: { token: { token }, user: userResponse } }
+			return { status: 'SUCCESSFUL', data: { token, user: userResponse } }
 		} catch (error) {
 			const errorMessage = error as Error
 			return { status: 'UNAUTHORIZED', data: { message: errorMessage.message } }

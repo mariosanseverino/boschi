@@ -21,7 +21,7 @@ export default function Login() {
 		setIsLoading(true)
 
 		try {
-			const { token, user }: { token: Token['token'], user: UserResponse } = await requestLogin('/login', { email, password })
+			const { token, user }: { token: Token, user: UserResponse } = await requestLogin('/login', { email, password })
 			localStorage.setItem('authToken', token)
 			api.defaults.headers.common['Authorization'] = `Bearer ${ token }`
 			setUser(user)
