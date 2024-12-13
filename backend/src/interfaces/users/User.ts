@@ -38,3 +38,4 @@ export interface UserRegisterRequest {
 }
 
 export interface NewUser extends Omit<User, 'password' | 'orders'> {}
+export interface UserResponse extends Omit<User, 'password'> {}

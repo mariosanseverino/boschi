@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { NewUser, UserAddress, UserAddressRequest } from '../interfaces/users/User'
+import { NewUser, UserAddressRequest } from '../interfaces/users/User'
 import { UserRegisterRequest } from '../interfaces/users/User'
 
 export default class RegisterModel {

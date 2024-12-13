@@ -1,3 +1,4 @@
+import { User } from '@prisma/client'
 import { ServiceResponse } from '../interfaces/ServiceResponse'
 import { Order, OrderRequest, OrderUpdate } from '../interfaces/orders/Order'
 import OrdersModel from '../models/OrdersModel'
@@ -41,6 +42,16 @@ export default class OrdersService {
 		try {
 			const order = await this.ordersModel.getById(orderId)
 			return { status: 'SUCCESSFUL', data: order }
+		} catch (error) {
+			const errorMessage = error as Error
+			return { status: 'UNAUTHORIZED', data: { message: errorMessage.message } }
+		}
+	}
+
+	async getByUserId(userId: User['id']): Promise<ServiceResponse<Order[]>> {
+		try {
+			const orders = await this.ordersModel.getByUserId(userId)
+			return { status: 'SUCCESSFUL', data: orders }
 		} catch (error) {
 			const errorMessage = error as Error
 			return { status: 'UNAUTHORIZED', data: { message: errorMessage.message } }

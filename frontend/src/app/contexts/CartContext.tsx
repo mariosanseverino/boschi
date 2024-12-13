@@ -6,6 +6,7 @@ import React, {
 	useEffect
 } from 'react'
 import { Order, OrderProduct, OrderRequest } from '../interfaces/orders/Order'
+import { User } from '../interfaces/users/User'
 
 export type CartContextProps = {
 	cartProducts: OrderProduct[],
@@ -13,7 +14,8 @@ export type CartContextProps = {
 	removeFromCart: (removedProduct: OrderProduct) => void,
 	updateProductQuantity: (productToUpdate: OrderProduct, quantity: OrderProduct['quantity']) => void,
 	placeOrder: (order: OrderRequest) => Promise<Order | undefined>,
-	findOrder: (orderId: Order['id']) => Promise<Order | undefined>
+	findOrder: (orderId: Order['id']) => Promise<Order | undefined>,
+	getOrdersByUserId: (userId: User['id']) => Promise<Order[] | undefined>
 }
 
 export const CartContext = createContext<CartContextProps>({
@@ -22,7 +24,8 @@ export const CartContext = createContext<CartContextProps>({
 	removeFromCart: () => {},
 	updateProductQuantity: () => {},
 	placeOrder: () => Promise.reject('Method not implemented'),
-	findOrder: () => Promise.reject('Method not implemented')
+	findOrder: () => Promise.reject('Method not implemented'),
+	getOrdersByUserId: () => Promise.reject('Method not implemented'),
 })
 
 interface CartProviderProps {
@@ -125,13 +128,36 @@ export default function CartProvider({ children }: CartProviderProps) {
 		
 	}
 
+	async function getOrdersByUserId(userId: User['id']): Promise<Order[] | undefined> {
+		const token = localStorage.getItem('authToken')
+
+		if (token) {
+			const response = await fetch(`${ process.env.NEXT_PUBLIC_API_URL }/orders/user/${ userId }`, {
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${ token }`,
+					'Content-Type': 'application/json'
+				}
+			})
+
+			if (!response.ok) {
+				throw new Error('ERROR! Couldn\'t fetch all orders')
+			}
+
+			const data: Order[] = await response.json()
+
+			return data
+		}
+	}
+
 	const shopCartValue = {
 		cartProducts,
 		addToCart,
 		removeFromCart,
 		updateProductQuantity,
 		placeOrder,
-		findOrder
+		findOrder,
+		getOrdersByUserId
 	}
 
 	useEffect(() => {

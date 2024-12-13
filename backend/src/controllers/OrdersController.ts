@@ -34,4 +34,11 @@ export default class OrdersController {
 		const { status, data } = serviceResponse
 		return res.status(ServiceCodes[status]).json(data)
 	}
+
+	async getByUserId(req: Request, res: Response): Promise<Response> {
+		const { id } = req.params
+		const serviceResponse = await this.ordersService.getByUserId(Number(id))
+		const { status, data } = serviceResponse
+		return res.status(ServiceCodes[status]).json(data)
+	}
 }
